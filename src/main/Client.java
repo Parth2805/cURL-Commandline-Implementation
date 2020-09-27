@@ -52,15 +52,18 @@ public class Client {
             }
             else if (data[1].equalsIgnoreCase("get")) {
                 if (data[2].equals("-v")) {
-                    lib.methodPassing1("vg", url2);
-                }
-                else if (data[2].equals("-h") || data[2].equals("--h")) {
-                    lib.methodPassing1("hg", data[data.length - 1]);
+                    lib.get(true,url2);
                 }
                 else {
-                    System.out.println("Please Enter The Right Command !!!");
-                    System.out.println("Use \"httpc help get\" for more information about commands.");
+                    lib.get(false,url2);
                 }
+//                else if (data[2].equals("-h") || data[2].equals("--h")) {
+////                    lib.get("hg", data[data.length - 1]);
+//                }
+//                else {
+//                    System.out.println("Please Enter The Right Command !!!");
+//                    System.out.println("Use \"httpc help get\" for more information about commands.");
+//                }
             }
             else if (data[1].equalsIgnoreCase("post")) {
                 if ((Arrays.asList(data).contains("-f") || Arrays.asList(data).contains("--f")) && (Arrays.asList(data).contains("-d") || Arrays.asList(data).contains("--d"))) {
@@ -70,25 +73,25 @@ public class Client {
                 }
                 else {
                     switch(data[2]) {
-                        case "-v":
-                            lib.methodPassing1("vp", data[data.length - 1]);
-                            break;
-                        case "-h":
-                        case "--h":
-                            lib.methodPassing1("hp", data[data.length - 1]);
-                            break;
-                        case "-f":
-                        case "--f":
-                            lib.methodPassing1("f", data[data.length - 1]);
-                            break;
-                        case "-d":
-                        case "--d":
-                            lib.methodPassing1("d", data[data.length - 1]);
-                            break;
-                        case "-o":
-                        case "--o":
-                            lib.methodPassing1("o", data[data.length - 1]);
-                            break;
+//                        case "-v":
+//                            lib.get("vp", data[data.length - 1]);
+//                            break;
+//                        case "-h":
+//                        case "--h":
+//                            lib.get("hp", data[data.length - 1]);
+//                            break;
+//                        case "-f":
+//                        case "--f":
+//                            lib.get("f", data[data.length - 1]);
+//                            break;
+//                        case "-d":
+//                        case "--d":
+//                            lib.get("d", data[data.length - 1]);
+//                            break;
+//                        case "-o":
+//                        case "--o":
+//                            lib.get("o", data[data.length - 1]);
+//                            break;
                         default:
                             System.out.println("Please Enter The Right Command !!!");
                             System.out.println("Use \"httpc help post\" for more information about commands.");
@@ -109,3 +112,30 @@ public class Client {
     }
 }
 
+
+/*
+
+
+httpc help
+
+httpc help post
+
+httpc help get
+
+httpc get http://httpbin.org/get?course=networking&assignment=1
+
+httpc get -v http://httpbin.org/get?course=networking&assignment=1
+
+httpc post -h Content-Type:application/json --d {"Assignment":1} http://httpbin.org/post
+
+httpc post -h Content-Type:application/json --d {"Assignment":1} -d {"Assignment":2} --d {"Assignment":3} http://httpbin.org/post
+
+httpc post -h Content-Type:application/json -f {} -d {} http://httpbin.org/post
+
+httpc post -h Content-Type:application/json -f data.txt http://httpbin.org/post
+
+httpc post -h Content-Type:application/json -d {"Assignment":1} -o result.txt http://httpbin.org/post
+
+httpc get -v -h Content-Type:application/json https://httpstat.us/302
+
+ */

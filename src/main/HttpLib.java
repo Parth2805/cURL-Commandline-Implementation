@@ -5,43 +5,94 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.URL;
 
-import java.io.IOException;
-import java.net.*;
 
 public class HttpLib {
     public String host;
-    public String port;
+    public int port;
     public String path;
+    public boolean v;
+    public String httpreq = "";
+    String output;
+    String query;
 
-    public void methodPassing1(String com, String url1) throws IOException {
+    public void get(Boolean verbose,String url1) throws IOException {
+
         URL url = new URL(url1);
-        switch (com) {
-            case "vg":
-                System.out.println("vg" + url);
-                break;
-            case "vp":
-                System.out.println("vp" + url);
-                break;
-            case "hg":
-                System.out.println("hg" + url);
-                break;
-            case "hp":
-                System.out.println("hp" + url);
-                break;
-            case "f":
-                System.out.println("f" + url);
-                break;
-            case "d":
-                System.out.println("d" + url);
-                break;
-            case "o":
-                System.out.println("o" + url);
-                break;
-            default:
-                System.out.println("Please Enter The Right Command !!!");
-                System.out.println("Use \"httpc help\" for more information about commands.");
+        path = url.getPath();
+        host = url.getHost();
+        port = 80;
+        query = url.getQuery();
+        httpreq = "GET " + path + "?" +query;
+
+        Socket s = new Socket(host, port);
+        PrintWriter pw = new PrintWriter(s.getOutputStream(),true);
+        BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+
+//        System.out.println("URL data:"+ url.getQuery());
+
+        //Data Adding
+            //TO DO
+
+        //Add protocol
+        httpreq = httpreq + " HTTP/1.0\r\n" + "Host:" + host +"\r\n" + "\r\n";
+//        System.out.println("Request:" + httpreq );
+        pw.write(httpreq);
+        pw.flush();
+
+        //Response
+        output = br.readLine();
+
+        //If verbose not enabled
+        if(verbose==false){
+
+            while(output!=null){
+
+                if(output.length()==0){
+
+                    break;
+                }
+                output=br.readLine();
+
+            }
+        }
+
+        while((output=br.readLine())!=null){
+
+            System.out.println(output);
 
         }
+
+
+
+
+
+//        switch (com) {
+//            case "vg":
+//                System.out.println("vg" + url);
+//                break;
+//            case "vp":
+//                System.out.println("vp" + url);
+//                break;
+//            case "hg":
+//                System.out.println("hg" + url);
+//                break;
+//            case "hp":
+//                System.out.println("hp" + url);
+//                break;
+//            case "f":
+//                System.out.println("f" + url);
+//                break;
+//            case "d":
+//                System.out.println("d" + url);
+//                break;
+//            case "o":
+//                System.out.println("o" + url);
+//                break;
+//            default:
+//                System.out.println("Please Enter The Right Command !!!");
+//                System.out.println("Use \"httpc help\" for more information about commands.");
+
+//        }
     }
 }
 
