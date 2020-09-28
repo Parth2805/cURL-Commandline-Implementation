@@ -66,6 +66,10 @@ public class Client {
 //                }
             }
             else if (data[1].equalsIgnoreCase("post")) {
+
+                ArrayList<String> header = new ArrayList<String>();
+                header.add("Content-Type:application/json");
+                lib.post(true,url2,header,null);
                 if ((Arrays.asList(data).contains("-f") || Arrays.asList(data).contains("--f")) && (Arrays.asList(data).contains("-d") || Arrays.asList(data).contains("--d"))) {
                     System.out.println("Please Enter The Right Command !!!");
                     System.out.println("Either [-d] or [-f] can be used but not both.");
@@ -74,7 +78,7 @@ public class Client {
                 else {
                     switch(data[2]) {
 //                        case "-v":
-//                            lib.get("vp", data[data.length - 1]);
+//                            lib.post(true, data[data.length - 1]);
 //                            break;
 //                        case "-h":
 //                        case "--h":
