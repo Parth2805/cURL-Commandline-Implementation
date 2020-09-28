@@ -4,15 +4,19 @@ import java.net.MalformedURLException;
 
 public class Client {
     public static void main(String[] args) throws Exception {
+        System.out.println("Welcome to cURL Application!!!");
         methodPassing();
+        System.out.println("\nThank you!!!");
     }
 
     public static void methodPassing() throws IOException {
         HttpLib lib = new HttpLib();
         Scanner command = new Scanner(System.in);
+        System.out.print(">");
         String input = command.nextLine();
         String[] data = input.split(" ");
         String url2= data[data.length-1];
+        String url1= url2.substring(1,url2.length()-1);
         if (data[0].equalsIgnoreCase("httpc")) {
             if (data[1].equalsIgnoreCase("help")) {
                 if (data.length == 2) {
@@ -75,6 +79,7 @@ public class Client {
                     System.out.println("Either [-d] or [-f] can be used but not both.");
                     System.out.println("Use \"httpc help\" for more information about commands.");
                 }
+
                 else {
                     switch(data[2]) {
 //                        case "-v":
@@ -112,7 +117,11 @@ public class Client {
             System.out.println("The command should have \"httpc command [arguments]\" format");
             System.out.println("Use \"httpc help\" for more information about commands.");
         }
-
+        System.out.println("\nPress Y/y to CONTINUE or any key to EXIT...");
+        String continue_command = command.nextLine();
+        if(continue_command.equalsIgnoreCase("Y")){
+            methodPassing();
+        }
     }
 }
 
