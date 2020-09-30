@@ -15,6 +15,7 @@ public class HttpLib {
     public String httpreq = "";
     String output;
     String query;
+    int content_length= 0;
 
     public void get(Boolean verbose,ArrayList<String> header,String url1) throws IOException {
 
@@ -85,19 +86,43 @@ public class HttpLib {
     }
 
 
-    void post(boolean verbose,  ArrayList<String> headers, ArrayList<String> data, ArrayList<String> file, String url1) throws IOException {
+    void post(boolean verbose,  ArrayList<String> header, ArrayList<String> data, ArrayList<String> file, String url1) throws IOException {
 
         URL url = new URL(url1);
-        Socket s = new Socket(host, port);
-        PrintWriter pw = new PrintWriter(s.getOutputStream(),true);
-        BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
 
         path = url.getPath();
         host = url.getHost();
         port = 80;
         query = url.getQuery();
-        httpreq = "POST " + path + "?" +query;
 
+        Socket s = new Socket(host, port);
+        PrintWriter pw = new PrintWriter(s.getOutputStream(),true);
+        BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+
+        httpreq = "POST " + path;
+
+        if(query!=null){
+            httpreq += "?" + query;
+        }
+
+        //Add protocol
+        httpreq = httpreq + " HTTP/1.0\r\n" + "Host:" + host +"\r\n";
+
+        //Add Content-Length
+        for(String d :data){
+
+            content_length += d.length();
+
+        }
+        httpreq += "Content-Length:" + content_length +"\r\n";
+
+        //Adding headers
+        for(String headers : header){
+            if(!headers.equals("Host:"+host)){
+
+                httpreq += headers +"\r\n";
+            }
+        }
 
 
         //Data Adding
@@ -105,38 +130,24 @@ public class HttpLib {
 
             for(int i=0;i<data.size();i++){
 
-                httpreq = httpreq + data;
+                httpreq = httpreq + "\r\n" + data.get(i);
 
-                if(i!=data.size()-1){
-
-                    httpreq = httpreq + "&";
-                }
             }
+        }else{
+
+            httpreq += "\r\n";
         }
-
-
-
-
-        //Add protocol
-        httpreq = httpreq + " HTTP/1.0\r\n" + "Host:" + host +"\r\n";
-
-        //Add header
-        if(headers.size()>0){
-            httpreq = httpreq + "Host:" + headers + "\r\n";
-        }
-        httpreq = httpreq + "\r\n";
 
         System.out.println("Request:" + httpreq );
+        System.out.println("---------------------------------");
         pw.write(httpreq);
         pw.flush();
 
         //Response
         output = br.readLine();
 
-
-
         //If verbose not enabled
-        if(verbose==false){
+        if(!verbose){
 
             while(output!=null){
 
@@ -149,11 +160,13 @@ public class HttpLib {
             }
         }
 
-        while((output=br.readLine())!=null){
+        while(output!=null){
 
             System.out.println(output);
+            output = br.readLine();
 
         }
+
         s.close();
         pw.close();
         br.close();
