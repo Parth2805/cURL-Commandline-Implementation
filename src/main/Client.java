@@ -1,6 +1,7 @@
 import java.util.*;
 import java.io.*;
 import java.net.MalformedURLException;
+import java.util.stream.Collectors;
 
 public class Client {
     public static void main(String[] args) throws Exception {
@@ -68,7 +69,6 @@ public class Client {
                     if (data[i].equals("-v")) {
                         v1=true;
                         command1=true;
-                        i+=1;
                     }
                     else if (data[i].equalsIgnoreCase("-h") || data[i].equalsIgnoreCase("--h")) {
                         String temp1= data[i+1];
@@ -90,7 +90,9 @@ public class Client {
                     }
                 }
                 if(command1=true){
-                    lib.get(v1, h1, url2);
+                    System.out.println(h1);
+                    List<String> header1 = h1.stream().distinct().collect(Collectors.toList());
+                    lib.get(v1, (ArrayList<String>) header1, url2);
                 }
                 else{
                     System.out.println("Please Enter The Right Command !!!");
@@ -113,7 +115,6 @@ public class Client {
                         if (data[i].equalsIgnoreCase("-v")) {
                             v2 = true;
                             command2=true;
-                            i+=1;
                         }
                         else if (data[i].equalsIgnoreCase("-h") || data[i].equalsIgnoreCase("--h")) {
                             String temp1= data[i+1];
@@ -163,7 +164,8 @@ public class Client {
                         }
                     }
                     if(command2=true){
-                         lib.post(v2,h2,d2,f2,url2);
+                        List<String> header2 = h2.stream().distinct().collect(Collectors.toList());
+                         lib.post(v2, (ArrayList<String>) header2,d2,f2,url2);
                     }
                     else{
                         System.out.println("Please Enter The Right Command !!!");
