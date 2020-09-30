@@ -15,109 +15,41 @@ public class HttpLib {
     public String httpreq = "";
     String output;
     String query;
+    int content_length= 0;
 
-    public void get(Boolean verbose, ArrayList<String> headers,String url1) throws IOException {
+    public void get(Boolean verbose,ArrayList<String> header,String url1) throws IOException {
 
         URL url = new URL(url1);
         path = url.getPath();
         host = url.getHost();
         port = 80;
         query = url.getQuery();
-        httpreq = "GET " + path + "?" +query;
-        System.out.println(verbose);
-        System.out.println(headers);
-        System.out.println(url1);
-/*
+
         Socket s = new Socket(host, port);
         PrintWriter pw = new PrintWriter(s.getOutputStream(),true);
         BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
 
+        //Request Forming
+        httpreq = "GET " + path;
+
+        if(query!=null){
+
+            httpreq += "?" + query;
+        }
         System.out.println("URL data:"+ url.getQuery());
-
-        //Data Adding
-            //TO DO
-
-        //Add protocol
-        httpreq = httpreq + " HTTP/1.0\r\n" + "Host:" + host +"\r\n" + "\r\n";
-//        System.out.println("Request:" + httpreq );
-        pw.write(httpreq);
-        pw.flush();
-
-        //Response
-        output = br.readLine();
-
-        //If verbose not enabled
-        if(verbose==false){
-
-            while(output!=null){
-
-                if(output.length()==0){
-
-                    break;
-                }
-                output=br.readLine();
-
-            }
-        }
-
-        while((output=br.readLine())!=null){
-
-            System.out.println(output);
-
-        }
-
-        s.close();
-        pw.close();
-        br.close();
-*/
-    }
-
-
-    void post(boolean verbose, ArrayList<String> headers, ArrayList<String> data, ArrayList<String> file, String url1) throws IOException {
-
-        URL url = new URL(url1);
-        //Socket s = new Socket(host, port);
-        //PrintWriter pw = new PrintWriter(s.getOutputStream(), true);
-        //BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-
-        path = url.getPath();
-        host = url.getHost();
-        port = 80;
-        query = url.getQuery();
-        httpreq = "POST " + path + "?" + query;
-        System.out.println(verbose);
-        System.out.println(headers);
-        System.out.println(data);
-        System.out.println(file);
-        System.out.println(url1);
-
-    }
-/*
-        //Data Adding
-        if(data.size()!=0){
-
-            for(int i=0;i<data.size();i++){
-
-                httpreq = httpreq + data;
-
-                if(i!=data.size()-1){
-
-                    httpreq = httpreq + "&";
-                }
-            }
-        }
-
-
-
 
         //Add protocol
         httpreq = httpreq + " HTTP/1.0\r\n" + "Host:" + host +"\r\n";
 
-        //Add header
-        if(headers.size()>0){
-            httpreq = httpreq + "Host:" + headers + "\r\n";
+        //Adding headers
+        for(String headers : header){
+            if(!headers.equals("Host:"+host)){
+
+                httpreq += headers +"\r\n";
+            }
         }
-        httpreq = httpreq + "\r\n";
+        httpreq += "\r\n";
+
 
         System.out.println("Request:" + httpreq );
         pw.write(httpreq);
@@ -126,10 +58,8 @@ public class HttpLib {
         //Response
         output = br.readLine();
 
-
-
         //If verbose not enabled
-        if(verbose==false){
+        if(!verbose){
 
             while(output!=null){
 
@@ -142,20 +72,107 @@ public class HttpLib {
             }
         }
 
-        while((output=br.readLine())!=null){
+        while(output!=null){
 
             System.out.println(output);
+            output = br.readLine();
 
         }
+
+        s.close();
+        pw.close();
+        br.close();
+
+    }
+
+
+    void post(boolean verbose,  ArrayList<String> header, ArrayList<String> data, ArrayList<String> file, String url1) throws IOException {
+
+        URL url = new URL(url1);
+
+        path = url.getPath();
+        host = url.getHost();
+        port = 80;
+        query = url.getQuery();
+
+        Socket s = new Socket(host, port);
+        PrintWriter pw = new PrintWriter(s.getOutputStream(),true);
+        BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+
+        httpreq = "POST " + path;
+
+        if(query!=null){
+            httpreq += "?" + query;
+        }
+
+        //Add protocol
+        httpreq = httpreq + " HTTP/1.0\r\n" + "Host:" + host +"\r\n";
+
+        //Add Content-Length
+        for(String d :data){
+
+            content_length += d.length();
+
+        }
+        httpreq += "Content-Length:" + content_length +"\r\n";
+
+        //Adding headers
+        for(String headers : header){
+            if(!headers.equals("Host:"+host)){
+
+                httpreq += headers +"\r\n";
+            }
+        }
+
+
+        //Data Adding
+        if(data.size()!=0){
+
+            for(int i=0;i<data.size();i++){
+
+                httpreq = httpreq + "\r\n" + data.get(i);
+
+            }
+        }else{
+
+            httpreq += "\r\n";
+        }
+
+        System.out.println("Request:" + httpreq );
+        System.out.println("---------------------------------");
+        pw.write(httpreq);
+        pw.flush();
+
+        //Response
+        output = br.readLine();
+
+        //If verbose not enabled
+        if(!verbose){
+
+            while(output!=null){
+
+                if(output.length()==0){
+
+                    break;
+                }
+                output=br.readLine();
+
+            }
+        }
+
+        while(output!=null){
+
+            System.out.println(output);
+            output = br.readLine();
+
+        }
+
         s.close();
         pw.close();
         br.close();
     }
 
- */
 }
-
-
 //        switch (com) {
 //            case "vg":
 //                System.out.println("vg" + url);
@@ -183,7 +200,7 @@ public class HttpLib {
 //                System.out.println("Use \"httpc help\" for more information about commands.");
 
 //        }
-//Library other
+    //Library other
 //    boolean verbose = false;
 //    int port = 80;
 //    PrintWriter pw;
