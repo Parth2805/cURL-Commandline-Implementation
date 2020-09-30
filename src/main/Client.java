@@ -90,7 +90,7 @@ public class Client {
                     }
                 }
                 if(command1=true){
-                    System.out.println(h1);
+//                    System.out.println(h1);
                     List<String> header1 = h1.stream().distinct().collect(Collectors.toList());
                     lib.get(v1, (ArrayList<String>) header1, url2);
                 }

@@ -23,20 +23,34 @@ public class HttpLib {
         host = url.getHost();
         port = 80;
         query = url.getQuery();
-        httpreq = "GET " + path + "?" +query;
 
         Socket s = new Socket(host, port);
         PrintWriter pw = new PrintWriter(s.getOutputStream(),true);
         BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
 
+        //Request Forming
+        httpreq = "GET " + path;
+
+        if(query!=null){
+
+            httpreq += "?" + query;
+        }
         System.out.println("URL data:"+ url.getQuery());
 
-        //Data Adding
-            //TO DO
-
         //Add protocol
-        httpreq = httpreq + " HTTP/1.0\r\n" + "Host:" + host +"\r\n" + "\r\n";
-//        System.out.println("Request:" + httpreq );
+        httpreq = httpreq + " HTTP/1.0\r\n" + "Host:" + host +"\r\n";
+
+        //Adding headers
+        for(String headers : header){
+            if(!headers.equals("Host:"+host)){
+
+                httpreq += headers +"\r\n";
+            }
+        }
+        httpreq += "\r\n";
+
+
+        System.out.println("Request:" + httpreq );
         pw.write(httpreq);
         pw.flush();
 
@@ -44,7 +58,7 @@ public class HttpLib {
         output = br.readLine();
 
         //If verbose not enabled
-        if(verbose==false){
+        if(!verbose){
 
             while(output!=null){
 
@@ -57,9 +71,10 @@ public class HttpLib {
             }
         }
 
-        while((output=br.readLine())!=null){
+        while(output!=null){
 
             System.out.println(output);
+            output = br.readLine();
 
         }
 
