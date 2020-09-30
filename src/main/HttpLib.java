@@ -16,7 +16,7 @@ public class HttpLib {
     String output;
     String query;
 
-    public void get(Boolean verbose,String url1) throws IOException {
+    public void get(Boolean verbose,ArrayList<String> header,String url1) throws IOException {
 
         URL url = new URL(url1);
         path = url.getPath();
@@ -70,7 +70,7 @@ public class HttpLib {
     }
 
 
-    void post(boolean verbose, String url1, ArrayList<String> headers, ArrayList<String> data) throws IOException {
+    void post(boolean verbose,  ArrayList<String> headers, ArrayList<String> data, ArrayList<String> file, String url1) throws IOException {
 
         URL url = new URL(url1);
         Socket s = new Socket(host, port);

@@ -15,8 +15,14 @@ public class Client {
         System.out.print(">");
         String input = command.nextLine();
         String[] data = input.split(" ");
-        String url2= data[data.length-1];
-        String url1= url2.substring(1,url2.length()-1);
+        String url1= data[data.length-1];
+        String url2;
+        if(url1.startsWith("\'")){
+            url2= url1.substring(1,url1.length()-1);
+        }
+        else{
+            url2=url1;
+        }
         if (data[0].equalsIgnoreCase("httpc")) {
             if (data[1].equalsIgnoreCase("help")) {
                 if (data.length == 2) {
@@ -55,55 +61,113 @@ public class Client {
                 }
             }
             else if (data[1].equalsIgnoreCase("get")) {
-                if (data[2].equals("-v")) {
-                    lib.get(true,url2);
+                boolean v1 =false;
+                boolean command1=false;
+                ArrayList<String> h1 = new ArrayList<String>();
+                for(int i=2; i<(data.length-1);i++){
+                    if (data[i].equals("-v")) {
+                        v1=true;
+                        command1=true;
+                        i+=1;
+                    }
+                    else if (data[i].equalsIgnoreCase("-h") || data[i].equalsIgnoreCase("--h")) {
+                        String temp1= data[i+1];
+                        if(temp1.startsWith("\'")){
+                            String temp2= temp1.substring(1,temp1.length()-1);
+                            h1.add(temp2);
+                            i+=1;
+                            command1=true;
+                        }
+                        else{
+                            h1.add(temp1);
+                            i+=1;
+                            command1=true;
+                        }
+                    }
+                    else {
+                        i+=1;
+                        command1=false;
+                    }
                 }
-                else {
-                    lib.get(false,url2);
+                if(command1=true){
+                    lib.get(v1, h1, url2);
                 }
-//                else if (data[2].equals("-h") || data[2].equals("--h")) {
-////                    lib.get("hg", data[data.length - 1]);
-//                }
-//                else {
-//                    System.out.println("Please Enter The Right Command !!!");
-//                    System.out.println("Use \"httpc help get\" for more information about commands.");
-//                }
+                else{
+                    System.out.println("Please Enter The Right Command !!!");
+                    System.out.println("Use \"httpc help get\" for more information about commands.");
+                }
             }
             else if (data[1].equalsIgnoreCase("post")) {
-
-                ArrayList<String> header = new ArrayList<String>();
-                header.add("Content-Type:application/json");
-                lib.post(true,url2,header,null);
                 if ((Arrays.asList(data).contains("-f") || Arrays.asList(data).contains("--f")) && (Arrays.asList(data).contains("-d") || Arrays.asList(data).contains("--d"))) {
                     System.out.println("Please Enter The Right Command !!!");
                     System.out.println("Either [-d] or [-f] can be used but not both.");
                     System.out.println("Use \"httpc help\" for more information about commands.");
                 }
-
-                else {
-                    switch(data[2]) {
-//                        case "-v":
-//                            lib.post(true, data[data.length - 1]);
-//                            break;
-//                        case "-h":
-//                        case "--h":
-//                            lib.get("hp", data[data.length - 1]);
-//                            break;
-//                        case "-f":
-//                        case "--f":
-//                            lib.get("f", data[data.length - 1]);
-//                            break;
-//                        case "-d":
-//                        case "--d":
-//                            lib.get("d", data[data.length - 1]);
-//                            break;
-//                        case "-o":
-//                        case "--o":
-//                            lib.get("o", data[data.length - 1]);
-//                            break;
-                        default:
-                            System.out.println("Please Enter The Right Command !!!");
-                            System.out.println("Use \"httpc help post\" for more information about commands.");
+                else{
+                    boolean v2 = false;
+                    boolean command2=false;
+                    ArrayList<String> h2 = new ArrayList<String>();
+                    ArrayList<String> d2 = new ArrayList<String>();
+                    ArrayList<String> f2 = new ArrayList<String>();
+                    for(int i=2;i<(data.length-1);i++) {
+                        if (data[i].equalsIgnoreCase("-v")) {
+                            v2 = true;
+                            command2=true;
+                            i+=1;
+                        }
+                        else if (data[i].equalsIgnoreCase("-h") || data[i].equalsIgnoreCase("--h")) {
+                            String temp1= data[i+1];
+                            if(temp1.startsWith("\'")){
+                                String temp2= temp1.substring(1,temp1.length()-1);
+                                h2.add(temp2);
+                                i+=1;
+                                command2=true;
+                            }
+                            else{
+                                h2.add(temp1);
+                                i+=1;
+                                command2=true;
+                            }
+                        }
+                        else if (data[i].equalsIgnoreCase("-d") || data[i].equalsIgnoreCase("--d")) {
+                            String temp1= data[i+1];
+                            if(temp1.startsWith("\'")){
+                                String temp2= temp1.substring(1,temp1.length()-1);
+                                d2.add(temp2);
+                                i+=1;
+                                command2=true;
+                            }
+                            else{
+                                d2.add(temp1);
+                                i+=1;
+                                command2=true;
+                            }
+                        }
+                        else if (data[i].equalsIgnoreCase("-f") || data[i].equalsIgnoreCase("--f")) {
+                            String temp1= data[i+1];
+                            if(temp1.startsWith("\'")){
+                                String temp2= temp1.substring(1,temp1.length()-1);
+                                f2.add(temp2);
+                                i+=1;
+                                command2=true;
+                            }
+                            else{
+                                f2.add(temp1);
+                                i+=1;
+                                command2=true;
+                            }
+                        }
+                        else {
+                            i+=1;
+                            command2=false;
+                        }
+                    }
+                    if(command2=true){
+                         lib.post(v2,h2,d2,f2,url2);
+                    }
+                    else{
+                        System.out.println("Please Enter The Right Command !!!");
+                        System.out.println("Use \"httpc help get\" for more information about commands.");
                     }
                 }
             }
@@ -125,30 +189,3 @@ public class Client {
     }
 }
 
-
-/*
-
-
-httpc help
-
-httpc help post
-
-httpc help get
-
-httpc get http://httpbin.org/get?course=networking&assignment=1
-
-httpc get -v http://httpbin.org/get?course=networking&assignment=1
-
-httpc post -h Content-Type:application/json --d {"Assignment":1} http://httpbin.org/post
-
-httpc post -h Content-Type:application/json --d {"Assignment":1} -d {"Assignment":2} --d {"Assignment":3} http://httpbin.org/post
-
-httpc post -h Content-Type:application/json -f {} -d {} http://httpbin.org/post
-
-httpc post -h Content-Type:application/json -f data.txt http://httpbin.org/post
-
-httpc post -h Content-Type:application/json -d {"Assignment":1} -o result.txt http://httpbin.org/post
-
-httpc get -v -h Content-Type:application/json https://httpstat.us/302
-
- */
