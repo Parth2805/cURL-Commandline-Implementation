@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
@@ -108,11 +105,36 @@ public class HttpLib {
         //Add protocol
         httpreq = httpreq + " HTTP/1.0\r\n" + "Host:" + host +"\r\n";
 
+
+        //If datafile present
+        if(file != null){
+
+            for(String files:file){
+
+                File data_file =  new File("src/main/"+files);
+
+                if(data_file.exists()){
+
+                    BufferedReader br1 = new BufferedReader(new FileReader(data_file));
+                    String file_output;
+                    while((file_output=br1.readLine())!=null){
+
+                        data.add(file_output);
+                    }
+
+                }else{
+
+                    System.out.println("File does not exist");
+                    return;
+
+                }
+            }
+        }
+
+
         //Add Content-Length
         for(String d :data){
-
             content_length += d.length();
-
         }
         httpreq += "Content-Length:" + content_length +"\r\n";
 
