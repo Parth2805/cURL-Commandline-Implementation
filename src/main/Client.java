@@ -17,7 +17,12 @@ public class Client {
         String[] data = input.split(" ");
         if (data[0].equalsIgnoreCase("httpc")) {
             if(data.length>1){
-                String url1= data[data.length-1];
+                String url1="";
+                for(int i=2;i<(data.length);i++){
+                    if(data[i].contains("http:")||data[i].contains("https:")){
+                        url1=data[i];
+                    }
+                }
                 String url2;
                 if(url1.startsWith("'")) url2 = url1.substring(1, url1.length() - 1);
                 else url2 = url1;
@@ -61,8 +66,9 @@ public class Client {
                     if(data.length>2){
                         boolean command1=true;
                         boolean v1 =false;
+                        String file1 = null;
                         ArrayList<String> h1 = new ArrayList<>();
-                        for(int i=2; i<(data.length-1);i++){
+                        for(int i=2; i<(data.length);i++){
                             if (data[i].equals("-v")) {
                                 v1=true;
                             }
@@ -75,12 +81,21 @@ public class Client {
                                 else h1.add(temp1);
                                 i+=1;
                             }
+                            else if (data[i].equalsIgnoreCase("-o")) {
+                                String temp1= data[i+1];
+                                if(temp1.startsWith("'")){
+                                    file1= temp1.substring(1,temp1.length()-1);
+                                }
+                                else file1=temp1;
+                                i+=1;
+                            }
+                            else if (data[i].contains("http:")||data[i].contains("https:")) { }
                             else command1=false;
                         }
                         if(command1) {
                             try {
                                 List<String> header1 = h1.stream().distinct().collect(Collectors.toList());
-                                lib.get(v1,"output.txt", (ArrayList<String>) header1, url2);
+                                lib.get(v1,file1, (ArrayList<String>) header1, url2);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -105,6 +120,7 @@ public class Client {
                         if(data.length>2){
                             boolean command2 = true;
                             boolean v2 = false;
+                            String file2=null;
                             ArrayList<String> h2 = new ArrayList<>();
                             ArrayList<String> d2 = new ArrayList<>();
                             ArrayList<String> f2 = new ArrayList<>();
@@ -139,12 +155,21 @@ public class Client {
                                     else f2.add(temp1);
                                     i+=1;
                                 }
+                                else if (data[i].equalsIgnoreCase("-o")) {
+                                    String temp1= data[i+1];
+                                    if(temp1.startsWith("'")){
+                                        file2= temp1.substring(1,temp1.length()-1);
+                                    }
+                                    else file2=temp1;
+                                    i+=1;
+                                }
+                                else if (data[i].contains("http:")||data[i].contains("https:")) { }
                                 else command2=false;
                             }
                             if(command2) {
                                 try {
                                     List<String> header2 = h2.stream().distinct().collect(Collectors.toList());
-                                    lib.post(v2,"output.txt", (ArrayList<String>) header2,d2,f2,url2);
+                                    lib.post(v2,file2, (ArrayList<String>) header2,d2,f2,url2);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -176,7 +201,7 @@ public class Client {
             System.out.println("The command should have \"httpc command [arguments]\" format");
             System.out.println("Use \"httpc help\" for more information about commands.");
         }
-        
+
         System.out.println("\nPress Y/y to CONTINUE or any key to EXIT...");
         String continue_command = command.nextLine();
         if(continue_command.equalsIgnoreCase("Y")){
