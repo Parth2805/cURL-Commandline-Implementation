@@ -80,7 +80,7 @@ public class Client {
                         if(command1) {
                             try {
                                 List<String> header1 = h1.stream().distinct().collect(Collectors.toList());
-                                lib.get(v1, (ArrayList<String>) header1, url2);
+                                lib.get(v1,"output.txt", (ArrayList<String>) header1, url2);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -144,7 +144,7 @@ public class Client {
                             if(command2) {
                                 try {
                                     List<String> header2 = h2.stream().distinct().collect(Collectors.toList());
-                                    lib.post(v2, (ArrayList<String>) header2,d2,f2,url2);
+                                    lib.post(v2,"output.txt", (ArrayList<String>) header2,d2,f2,url2);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
