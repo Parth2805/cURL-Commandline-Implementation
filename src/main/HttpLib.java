@@ -74,8 +74,9 @@ public class HttpLib {
         while(output!=null){
 
             System.out.println(output);
-            output = br.readLine();
             response += output + "\r\n";
+            output = br.readLine();
+
         }
 
         //If -o used
