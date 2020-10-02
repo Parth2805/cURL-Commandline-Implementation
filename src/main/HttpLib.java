@@ -198,7 +198,7 @@ public class HttpLib {
 
         }
 
-        System.out.println("Response:" + response);
+//        System.out.println("Response:" + response);
         //If -o used
         if(save_to_file!=null){
             writeToFile(save_to_file,response);
@@ -213,7 +213,7 @@ public class HttpLib {
 
         File file = new File(file_name);
         FileWriter fw = new FileWriter(file);
-        System.out.println("Response:"+response);
+//        System.out.println("Response:"+response);
         fw.write(response);
         fw.close();
 
