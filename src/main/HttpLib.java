@@ -48,6 +48,7 @@ public class HttpLib {
         }
         httpreq += "\r\n";
 
+
         System.out.println("Request:" + httpreq );
         pw.write(httpreq);
         pw.flush();
@@ -220,6 +221,8 @@ public class HttpLib {
     }
 
 }
+
+
 
 //String input_url1 = "GET /get?course=networking&assignment=1 HTTP/1.0\r\n" + "Host:httpbin.org\r\n" +"\r\n";
 
