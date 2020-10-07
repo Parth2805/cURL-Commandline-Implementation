@@ -30,10 +30,10 @@ public class HttpLib {
         //Request Forming
         httpreq = "GET " + path;
 
-        if(query!=null){
+//        if(query!=null){
 
             httpreq += "?" + query;
-        }
+//        }
         System.out.println("URL data:"+ url.getQuery());
 
         //Add protocol
@@ -106,9 +106,12 @@ public class HttpLib {
 
         httpreq = "POST " + path;
 
-        if(query!=null){
-            httpreq += "?" + query;
-        }
+        //Add query
+
+        httpreq += "?" + query;
+//        if(query!=null){
+//            httpreq += "?" + query;
+//        }
 
         //Add protocol
         httpreq = httpreq + " HTTP/1.0\r\n" + "Host:" + host +"\r\n";
