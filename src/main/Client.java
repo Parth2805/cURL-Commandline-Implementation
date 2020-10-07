@@ -210,3 +210,12 @@ public class Client {
     }
 }
 
+/*
+
+httpc get -v -h Content-Type:application/json https://httpbin.org/status/302
+httpc get -v -h Content-Type:application/json http://www.socengine.com/seo/
+httpc get -v -h Content-Type:application/json https://www.hugedomains.com/domain_profile.cfm?d=socengine&e=com
+ */
+
+
+
