@@ -8,12 +8,12 @@ public class HttpLib {
     public String host;
     public int port;
     public String path;
-    public boolean v;
     public String httpreq = "";
     String output;
     String query;
     int content_length= 0;
     String response="";
+    int redirectCount =0;
 
     public void get(Boolean verbose,String save_to_file,ArrayList<String> header,String url1) throws IOException {
 
@@ -55,7 +55,6 @@ public class HttpLib {
 
         //Response
         output = br.readLine();
-        response += response +"\r\n";
 
         //If verbose not enabled
         if(!verbose){
@@ -66,8 +65,9 @@ public class HttpLib {
 
                     break;
                 }
-                output=br.readLine();
+
                 response += output +"\r\n";
+                output=br.readLine();
             }
         }
 
@@ -77,6 +77,47 @@ public class HttpLib {
             response += output + "\r\n";
             output = br.readLine();
 
+        }
+
+        //redirect option
+        if(response.subSequence(response.indexOf(" ") + 1, response.indexOf(" ") + 2).equals("3")) {
+            if(redirectCount<5){
+                redirectCount++;
+                String newURL = "";
+                int locationIndex = response.indexOf("Location:");
+                if (locationIndex != -1) {
+                    int index = response.indexOf("Location:") + 10;
+                    while (response.charAt(index) != '\n') {
+                        newURL = newURL + String.valueOf(response.charAt(index));
+                        index++;
+                    }
+
+                    if(!(url1.trim()).contentEquals(newURL.trim())){
+                        System.out.println("\n---------------------------------------------------");
+                        System.out.print("Redirecting ");
+                        System.out.print(url1);
+                        System.out.println("    to ");
+                        System.out.println(newURL);
+                        System.out.println("----------------------------------------------------------");
+                        get(verbose,save_to_file,header,newURL);
+                    }
+                }
+                else{
+                    this.redirectCount=0;
+                    System.out.println("\n---------------------------------------------------");
+                    System.out.print("Redirecting ");
+                    System.out.print(url1);
+                    System.out.println(" to []");
+                    System.out.println("New url is not provided for redirecting.");
+                    System.out.println("---------------------------------------------------");
+                }
+            }
+            else{
+                this.redirectCount=0;
+                System.out.println("\n---------------------------------------------------");
+                System.out.println("Redirecting limit reached!!!");
+                System.out.println("---------------------------------------------------");
+            }
         }
 
         //If -o used
@@ -178,7 +219,6 @@ public class HttpLib {
 
         //Response
         output = br.readLine();
-        response += output+"\r\n";
 
         //If verbose not enabled
         if(!verbose){
@@ -189,22 +229,23 @@ public class HttpLib {
 
                     break;
                 }
-                output=br.readLine();
                 response += output +"\r\n";
-
+                output=br.readLine();
             }
         }
 
         while(output!=null){
-
             System.out.println(output);
             response += output + "\r\n";
             output = br.readLine();
-
-
         }
 
-//        System.out.println("Response:" + response);
+        //redirect option
+        if(response.subSequence(response.indexOf(" ") + 1, response.indexOf(" ") + 2).equals("3")){
+            System.out.println("\n\nThe POST method does not allow redirection.");
+            System.out.println("Please check the url!!!");
+        }
+
         //If -o used
         if(save_to_file!=null){
             writeToFile(save_to_file,response);
