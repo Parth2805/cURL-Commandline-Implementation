@@ -14,6 +14,7 @@ public class HttpLib {
     int content_length= 0;
     String response="";
     int redirectCount =0;
+    String writeFile ="";
 
     public void get(Boolean verbose,String save_to_file,ArrayList<String> header,String url1) throws IOException {
 
@@ -34,7 +35,7 @@ public class HttpLib {
 
             httpreq += "?" + query;
 //        }
-        System.out.println("URL data:"+ url.getQuery());
+//        System.out.println("URL data:"+ url.getQuery());
 
         //Add protocol
         httpreq = httpreq + " HTTP/1.0\r\n" + "Host:" + host +"\r\n";
@@ -75,9 +76,13 @@ public class HttpLib {
 
             System.out.println(output);
             response += output + "\r\n";
+            writeFile += output + "\r\n";
             output = br.readLine();
 
         }
+
+//        System.out.println("Response:" + response);
+//        System.out.println("WriteFile:" + writeFile);
 
         //redirect option
         if(response.subSequence(response.indexOf(" ") + 1, response.indexOf(" ") + 2).equals("3")) {
@@ -122,7 +127,7 @@ public class HttpLib {
 
         //If -o used
         if(save_to_file!=null){
-            writeToFile(save_to_file,response);
+            writeToFile(save_to_file,writeFile);
         }
 
         s.close();
@@ -149,10 +154,10 @@ public class HttpLib {
 
         //Add query
 
-        httpreq += "?" + query;
-//        if(query!=null){
-//            httpreq += "?" + query;
-//        }
+//        httpreq += "?" + query;
+        if(query!=null){
+            httpreq += "?" + query;
+        }
 
         //Add protocol
         httpreq = httpreq + " HTTP/1.0\r\n" + "Host:" + host +"\r\n";
@@ -237,6 +242,7 @@ public class HttpLib {
         while(output!=null){
             System.out.println(output);
             response += output + "\r\n";
+            writeFile += output + "\r\n";
             output = br.readLine();
         }
 
@@ -248,7 +254,7 @@ public class HttpLib {
 
         //If -o used
         if(save_to_file!=null){
-            writeToFile(save_to_file,response);
+            writeToFile(save_to_file,writeFile);
         }
 
         s.close();
