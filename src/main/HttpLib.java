@@ -31,11 +31,7 @@ public class HttpLib {
         //Request Forming
         httpreq = "GET " + path;
 
-//        if(query!=null){
-
-            httpreq += "?" + query;
-//        }
-//        System.out.println("URL data:"+ url.getQuery());
+        httpreq += "?" + query;
 
         //Add protocol
         httpreq = httpreq + " HTTP/1.0\r\n" + "Host:" + host +"\r\n";
@@ -59,30 +55,22 @@ public class HttpLib {
 
         //If verbose not enabled
         if(!verbose){
-
             while(output!=null){
-
                 if(output.length()==0){
 
                     break;
                 }
-
                 response += output +"\r\n";
                 output=br.readLine();
             }
         }
 
         while(output!=null){
-
             System.out.println(output);
             response += output + "\r\n";
             writeFile += output + "\r\n";
             output = br.readLine();
-
         }
-
-//        System.out.println("Response:" + response);
-//        System.out.println("WriteFile:" + writeFile);
 
         //redirect option
         if(response.subSequence(response.indexOf(" ") + 1, response.indexOf(" ") + 2).equals("3")) {
@@ -98,30 +86,40 @@ public class HttpLib {
                     }
 
                     if(!(url1.trim()).contentEquals(newURL.trim())){
-                        System.out.println("\n---------------------------------------------------");
+                        System.out.println("\n---------------------------------------------------------------------");
                         System.out.print("Redirecting ");
                         System.out.print(url1);
                         System.out.println("    to ");
                         System.out.println(newURL);
-                        System.out.println("----------------------------------------------------------");
+                        System.out.println("------------------------------------------------------------------------");
+                        writeFile += "\n-----------------------------------------------------------------------------";
+                        writeFile += "\nRedirecting  " +url1 +"  to\n" +newURL;
+                        writeFile += "\n---------------------------------------------------------------------------\n";
                         get(verbose,save_to_file,header,newURL);
                     }
                 }
                 else{
                     this.redirectCount=0;
-                    System.out.println("\n---------------------------------------------------");
+                    System.out.println("\n-------------------------------------------------------------------");
                     System.out.print("Redirecting ");
                     System.out.print(url1);
                     System.out.println(" to []");
                     System.out.println("New url is not provided for redirecting.");
-                    System.out.println("---------------------------------------------------");
+                    System.out.println("---------------------------------------------------------------------");
+                    writeFile += "\n--------------------------------------------------------------------------";
+                    writeFile += "\nRedirecting  " +url1 +"  to  []";
+                    writeFile += "\nNew url is not provided for redirecting.";
+                    writeFile += "\n-------------------------------------------------------------------------\n";
                 }
             }
             else{
                 this.redirectCount=0;
-                System.out.println("\n---------------------------------------------------");
+                System.out.println("\n------------------------------------------------------------------------");
                 System.out.println("Redirecting limit reached!!!");
-                System.out.println("---------------------------------------------------");
+                System.out.println("--------------------------------------------------------------------------");
+                writeFile += "\n------------------------------------------------------------------------------";
+                writeFile += "\nRedirecting limit reached!!!";
+                writeFile += "\n-----------------------------------------------------------------------------\n";
             }
         }
 
@@ -133,7 +131,6 @@ public class HttpLib {
         s.close();
         pw.close();
         br.close();
-
     }
 
 
@@ -153,8 +150,7 @@ public class HttpLib {
         httpreq = "POST " + path;
 
         //Add query
-
-//        httpreq += "?" + query;
+        //httpreq += "?" + query;
         if(query!=null){
             httpreq += "?" + query;
         }
@@ -165,25 +161,21 @@ public class HttpLib {
 
         //If datafile present
         if(file != null){
-
             for(String files:file){
 
                 File data_file =  new File("src/main/"+files);
 
                 if(data_file.exists()){
-
                     BufferedReader br1 = new BufferedReader(new FileReader(data_file));
                     String file_output;
                     while((file_output=br1.readLine())!=null){
 
                         data.add(file_output);
                     }
-
-                }else{
-
+                }
+                else{
                     System.out.println("File does not exist");
                     return;
-
                 }
             }
         }
@@ -206,14 +198,11 @@ public class HttpLib {
 
         //Data Adding
         if(data.size()!=0){
-
             for(int i=0;i<data.size();i++){
-
                 httpreq = httpreq + "\r\n" + data.get(i);
-
             }
-        }else{
-
+        }
+        else{
             httpreq += "\r\n";
         }
 
@@ -227,11 +216,8 @@ public class HttpLib {
 
         //If verbose not enabled
         if(!verbose){
-
             while(output!=null){
-
                 if(output.length()==0){
-
                     break;
                 }
                 response += output +"\r\n";
@@ -250,6 +236,7 @@ public class HttpLib {
         if(response.subSequence(response.indexOf(" ") + 1, response.indexOf(" ") + 2).equals("3")){
             System.out.println("\n\nThe POST method does not allow redirection.");
             System.out.println("Please check the url!!!");
+            writeFile += "\nThe POST method does not allow redirection.\nPlease check the url!!!";
         }
 
         //If -o used
@@ -263,15 +250,11 @@ public class HttpLib {
     }
 
     void writeToFile(String file_name,String response) throws IOException {
-
         File file = new File(file_name);
         FileWriter fw = new FileWriter(file);
-//        System.out.println("Response:"+response);
         fw.write(response);
         fw.close();
-
     }
-
 }
 
 

@@ -9,13 +9,18 @@ public class Client {
         System.out.println("\nThank you!!!");
     }
 
+    //Type checking & appropriate method calling
     public static void methodPassing() throws IOException {
         HttpLib lib = new HttpLib();
         Scanner command = new Scanner(System.in);
         System.out.print(">");
         String input = command.nextLine();
         String[] data = input.split(" ");
+
+        //check for right client
         if (data[0].equalsIgnoreCase("httpc")) {
+
+            //url is retrieved
             if(data.length>1){
                 String url1="";
                 for(int i=2;i<(data.length);i++){
@@ -26,6 +31,8 @@ public class Client {
                 String url2;
                 if(url1.startsWith("'")) url2 = url1.substring(1, url1.length() - 1);
                 else url2 = url1;
+
+                //Help for get & post commands
                 if (data[1].equalsIgnoreCase("help")) {
                     if (data.length == 2) {
                         System.out.println("httpc is a curl-like application but supports HTTP protocol only. ");
@@ -62,6 +69,8 @@ public class Client {
                         System.out.println("Use \"httpc help\" for more information about commands.");
                     }
                 }
+
+                //Method calling for get command
                 else if (data[1].equalsIgnoreCase("get")) {
                     if(data.length>2){
                         boolean command1=true;
@@ -110,6 +119,8 @@ public class Client {
                         System.out.println("Use \"httpc help get\" for more information about commands.");
                     }
                 }
+
+                // Method calling for post command
                 else if (data[1].equalsIgnoreCase("post")) {
                     if ((Arrays.asList(data).contains("-f") || Arrays.asList(data).contains("--f")) && (Arrays.asList(data).contains("-d") || Arrays.asList(data).contains("--d"))) {
                         System.out.println("Please Enter The Right Command !!!");
@@ -202,6 +213,7 @@ public class Client {
             System.out.println("Use \"httpc help\" for more information about commands.");
         }
 
+        //Method calling for continuation
         System.out.println("\nPress Y/y to CONTINUE or any key to EXIT...");
         String continue_command = command.nextLine();
         if(continue_command.equalsIgnoreCase("Y")){
@@ -211,10 +223,10 @@ public class Client {
 }
 
 /*
-
 httpc get -v -h Content-Type:application/json https://httpbin.org/status/302
 httpc get -v -h Content-Type:application/json http://www.socengine.com/seo/
 httpc get -v -h Content-Type:application/json https://www.hugedomains.com/domain_profile.cfm?d=socengine&e=com
+blog.ahrefs.com 
  */
 
 
