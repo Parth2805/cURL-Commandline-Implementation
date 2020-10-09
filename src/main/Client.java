@@ -223,10 +223,34 @@ public class Client {
 }
 
 /*
+httpc help
+
+httpc help post
+
+httpc help get
+
+httpc get 'http://httpbin.org/get?course=networking&assignment=1' -o output.txt
+
+httpc get -v 'http://httpbin.org/get?course=networking&assignment=1' -o output.txt
+
+httpc post -h Content-Type:application/json --d {"Assignment":1} 'http://httpbin.org/post' -o output.txt
+
+httpc post -h Content-Type:application/json --d {"Assignment":1} -d {"Assignment":2} --d {"Assignment":3} 'http://httpbin.org/post' -o output.txt
+
+httpc post -h Content-Type:application/json -f {} -d {} 'http://httpbin.org/post' -o output.txt
+
+httpc post -h Content-Type:application/json -f data.txt 'http://httpbin.org/post' -o output.txt
+
+httpc post -h Content-Type:application/json -d {"Assignment":1} -o output.txt 'http://httpbin.org/post'
+
+httpc get -v -h Content-Type:application/json 'https://httpstat.us/302'
+
 httpc get -v -h Content-Type:application/json https://httpbin.org/status/302
+
 httpc get -v -h Content-Type:application/json http://www.socengine.com/seo/
+
 httpc get -v -h Content-Type:application/json https://www.hugedomains.com/domain_profile.cfm?d=socengine&e=com
-blog.ahrefs.com 
+blog.ahrefs.com
  */
 
 
