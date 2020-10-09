@@ -125,7 +125,7 @@ public class Client {
                     if ((Arrays.asList(data).contains("-f") || Arrays.asList(data).contains("--f")) && (Arrays.asList(data).contains("-d") || Arrays.asList(data).contains("--d"))) {
                         System.out.println("Please Enter The Right Command !!!");
                         System.out.println("Either [-d] or [-f] can be used but not both.");
-                        System.out.println("Use \"httpc help\" for more information about commands.");
+                        System.out.println("Use \"httpc help post\" for more information about commands.");
                     }
                     else{
                         if(data.length>2){
