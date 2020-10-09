@@ -125,7 +125,7 @@ public class Client {
                     if ((Arrays.asList(data).contains("-f") || Arrays.asList(data).contains("--f")) && (Arrays.asList(data).contains("-d") || Arrays.asList(data).contains("--d"))) {
                         System.out.println("Please Enter The Right Command !!!");
                         System.out.println("Either [-d] or [-f] can be used but not both.");
-                        System.out.println("Use \"httpc help\" for more information about commands.");
+                        System.out.println("Use \"httpc help post\" for more information about commands.");
                     }
                     else{
                         if(data.length>2){
@@ -187,12 +187,12 @@ public class Client {
                             }
                             else {
                                 System.out.println("Please Enter The Right Command !!!");
-                                System.out.println("Use \"httpc help post\" for more information about commands.");
+                                System.out.println("Use \"httpc help post1\" for more information about commands.");
                             }
                         }
                         else{
                             System.out.println("Please Enter The Right Command !!!");
-                            System.out.println("Use \"httpc help post\" for more information about commands.");
+                            System.out.println("Use \"httpc help post2\" for more information about commands.");
                         }
                     }
                 }
@@ -223,10 +223,17 @@ public class Client {
 }
 
 /*
+httpc help [get/help]
+httpc get 'http://httpbin.org/get?course=networking&assignment=1'
+httpc get -v 'http://httpbin.org/get?course=networking&assignment=1'
+httpc post -h Content-Type:application/json --d '{"Assignment":1}' http://httpbin.org/post
+httpc post -h Content-Type:application/json --d '{"Assignment":1}' -d '{"Project":1}' --d '{"Assignment":2}' http://httpbin.org/post
+httpc post -h Content-Type:application/json -f data.txt http://httpbin.org/post
+httpc post -h Content-Type:application/json --d '{"Assignment":1}' -f data.txt http://httpbin.org/post
+httpc post -h Content-Type:application/json -d {"Assignment":1} -o result.txt http://httpbin.org/post
 httpc get -v -h Content-Type:application/json https://httpbin.org/status/302
 httpc get -v -h Content-Type:application/json http://www.socengine.com/seo/
 httpc get -v -h Content-Type:application/json https://www.hugedomains.com/domain_profile.cfm?d=socengine&e=com
-blog.ahrefs.com 
  */
 
 
