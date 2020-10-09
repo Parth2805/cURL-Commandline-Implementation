@@ -66,7 +66,12 @@ public class HttpLib {
         }
 
         while(output!=null){
-            System.out.println(output);
+            if(save_to_file==null){
+
+                System.out.println(output);
+
+            }
+
             response += output + "\r\n";
             writeFile += output + "\r\n";
             output = br.readLine();
@@ -226,7 +231,13 @@ public class HttpLib {
         }
 
         while(output!=null){
-            System.out.println(output);
+
+            if(save_to_file==null){
+
+                System.out.println(output);
+
+            }
+//            System.out.println(output);
             response += output + "\r\n";
             writeFile += output + "\r\n";
             output = br.readLine();
