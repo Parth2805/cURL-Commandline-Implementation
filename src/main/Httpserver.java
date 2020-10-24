@@ -1,70 +1,72 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class Httpserver {
 
-    static File f = new File("/src/main/");
-
+    static File f = new File("src/");
+    static int port = 8080;
+    static String dir = "src/main";
+    static int clientnumber = 0;
 
     public static void main(String args[]) throws IOException {
 
 
-        System.out.println("Server Started");
+        boolean verbose = false;
 
-        serverrunning();
+        Scanner sc = new Scanner(System.in);
+        String command = sc.nextLine();
+        String words[] = command.split(" ");
+
+        if (words[0].equals("httpfs") && words.length > 1) {
+
+            for (int i = 0; i < words.length; i++) {
+
+                switch (words[i]) {
+
+                    case "-p":
+                        port = Integer.parseInt(words[i + 1]);
+                        break;
+                    case "-v":
+                        verbose = true;
+                        break;
+                    case "-d":
+                        dir = words[i + 1];
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if (verbose) {
+
+                System.out.println("Server Started at Port:" + port);
+            } else {
+
+                System.out.println("Server Started");
+            }
+            serverrunning();
+
+        } else {
+
+            System.out.println("Type https [-v] [-p PORT] [-d PATH-TO-DIR]");
+        }
     }
-
-
 
     static void serverrunning() throws IOException {
 
-        ServerSocket ss = new ServerSocket();
+        ServerSocket ss = new ServerSocket(port);
 
 
-        while(true){
-
+        while (true) {
             Socket s1 = ss.accept();
-//            System.out.println("Client connected to:" + s1.getLocalAddress());
+            clientnumber++;
+            System.out.println("Client:" + clientnumber +"connected");
 
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(s1.getInputStream()));
-//            OutputStream os = s.getOutputStream();
-            String request;
-            String input="";
-            while((request =br.readLine()).length()!=0){
-
-                System.out.println(request);
-                input += request;
-            }
-
-            String data[] = input.split(" ");
-
-//            for(String d: data){
-//                System.out.println(d);
-//            }
-
-            if(data[0].equals("GET")){
-                get(data);
-            }
-            if(data[0].equals("POST")){
-                post(data);
-            }
-       }
-    }
-
-    static void get(String data[]){
-
-        if(data[1].equals("/")){
-
-            System.out.println(f.list());
-
+            Httpserverlib request = new Httpserverlib();
+            request.receive(s1);
         }
-
-
-    }
-
-    static void post(String data[]){
 
 
     }
