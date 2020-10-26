@@ -19,7 +19,7 @@ public class Httpserver {
         String command = sc.nextLine();
         String words[] = command.split(" ");
 
-        if (words[0].equals("httpfs") && words.length > 1) {
+        if (words[0].equals("httpfs")) {
 
             for (int i = 0; i < words.length; i++) {
 
@@ -50,7 +50,7 @@ public class Httpserver {
 
         } else {
 
-            System.out.println("Type https [-v] [-p PORT] [-d PATH-TO-DIR]");
+            System.out.println("Type httpfs [-v] [-p PORT] [-d PATH-TO-DIR]");
         }
     }
 
@@ -61,11 +61,33 @@ public class Httpserver {
 
         while (true) {
             Socket s1 = ss.accept();
+            String message="";
             clientnumber++;
             System.out.println("Client:" + clientnumber +"connected");
 
             Httpserverlib request = new Httpserverlib();
-            request.receive(s1);
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(s1.getInputStream()));
+            PrintWriter pw = new PrintWriter(new OutputStreamWriter(s1.getOutputStream()));
+            String output = br.readLine();
+
+
+            System.out.println(output);
+
+            if(output.startsWith("GET")){
+
+                message=request.getrequest(output);
+
+            }else if(output.startsWith("POST")){
+
+                message=request.postrequest(output);
+
+            }
+//            System.out.println("Message:"+message);
+            pw.write(message+"\r\n");
+            pw.flush();
+            pw.close();
+            s1.close();
         }
 
 
