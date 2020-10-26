@@ -71,9 +71,6 @@ public class Httpserver {
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(s1.getOutputStream()));
             String output = br.readLine();
 
-
-            System.out.println(output);
-
             if(output.startsWith("GET")){
 
                 message=request.getrequest(output);
@@ -83,11 +80,11 @@ public class Httpserver {
                 message=request.postrequest(output);
 
             }
-//            System.out.println("Message:"+message);
             pw.write(message+"\r\n");
             pw.flush();
             pw.close();
             s1.close();
+            System.out.println("Client:" + clientnumber +" disconnected");
         }
 
 

@@ -1,43 +1,60 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.Socket;
+import java.io.*;
 
 public class Httpserverlib {
 
 
-    synchronized String getrequest(String request){
+    synchronized String getrequest(String request) throws IOException {
 
-        String response = "";
-        request = request.substring(5);
-        String path = "src/main/" + request;
+        String response = "",file_output = "";
+        String data[] = request.split(" ");
+//        request = request.substring(5);
+        String path = "src/main/" + data[1].substring(1);
         File f = new File(path);
-        System.out.println(request+ " " + path);
-        if(!request.contains("/")){
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
 
-            if(f.exists()){
+        if(f.exists()){
 
-                response = "Yes file exists";
+            if(f.isFile()){
+
+                response = "HTTP Found\r\n";
+                while((file_output=br.readLine())!=null){
+
+                    response += file_output+"\r\n";
+                }
+                br.close();
+            }else{
+
+                response = "Not a file, its a directory.";
 
             }
-            else{
-                response = "File does not exist";
-            }
-            
-        }else{
-
-            System.out.println("error");
 
         }
-        System.out.println(response);
+        else{
+            response = "HTTP 404 Not Found";
+        }
+
         return response;
     }
 
-    synchronized String  postrequest(String request){
+    synchronized String  postrequest(String request) throws IOException {
 
-//        System.out.println("Got POst");
+        String response = "";
+        String data[] = request.split(" ");
+        String path = "src/main/" + data[1].substring(1) ;
+        File f = new File(path);
 
-    return null;
+
+        if(f.exists()){
+            response = "Yes file exists";
+            FileWriter fw = new FileWriter(f);
+            fw.write(data[3]);
+            fw.close();
+        }
+        else{
+            response = "HTTP 404 Not Found";
+
+        }
+
+        return response;
     }
 }

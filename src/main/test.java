@@ -16,10 +16,15 @@ public class test {
                 s = new Socket(InetAddress.getLocalHost(),8080);
                 pw = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
                 BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                pw.write("GET /data.txt\r\n");
+                pw.write("GET /test/data.txt -d hello1\r\n");
                 pw.flush();
-                String output = br.readLine();
-                System.out.println(output);
+                String output = "";
+                while((output = br.readLine())!=null){
+
+                    System.out.println(output);
+
+                }
+
                 br.close();
                 s.close();
             } catch (IOException e) {
@@ -34,8 +39,12 @@ public class test {
             try {
                 s = new Socket(InetAddress.getLocalHost(),8080);
                 pw = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
-                pw.write("Garbage\r\n");
+                BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                pw.write("POST /test/data.txt -d hello2\r\n");
                 pw.flush();
+                String output = br.readLine();
+                System.out.println(output);
+                br.close();
                 s.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -50,8 +59,12 @@ public class test {
             try {
                 s = new Socket(InetAddress.getLocalHost(),8080);
                 pw = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
-                pw.write("POST\r\n");
+                BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                pw.write("POST /test/data.txt -d hello3\r\n");
                 pw.flush();
+                String output = br.readLine();
+                System.out.println(output);
+                br.close();
                 s.close();
             } catch (IOException e) {
                 e.printStackTrace();
