@@ -22,15 +22,6 @@ public class Client {
 
             //url is retrieved
             if(data.length>1){
-                String url1="";
-                for(int i=2;i<(data.length);i++){
-                    if(data[i].contains("http:")||data[i].contains("https:")){
-                        url1=data[i];
-                    }
-                }
-                String url2;
-                if(url1.startsWith("'")) url2 = url1.substring(1, url1.length() - 1);
-                else url2 = url1;
 
                 //Help for get & post commands
                 if (data[1].equalsIgnoreCase("help")) {
@@ -49,6 +40,7 @@ public class Client {
                             System.out.println("Get executes a HTTP GET request for a given URL.\n");
                             System.out.println("\t-v              Prints the detail of the response such as protocol, status, and headers.");
                             System.out.println("\t-h key:value    Associates headers to HTTP Request with the format 'key:value'.");
+                            System.out.println("\t-o file         Writes the output in specified file.");
                         }
                         else if (data[2].equalsIgnoreCase("post")) {
                             System.out.println("usage: httpc post [-v] [-h key:value] [-d inline-data] [-f file] URL\n");
@@ -57,6 +49,7 @@ public class Client {
                             System.out.println("\t-h key:value    Associates headers to HTTP Request with the format 'key:value'.");
                             System.out.println("\t-d string       Associates an inline data to the body HTTP POST request.");
                             System.out.println("\t-f file         Associates the content of a file to the body HTTP POST request.\n");
+                            System.out.println("\t-o file         Writes the output in specified file.");
                             System.out.println("Either [-d] or [-f] can be used but not both.");
                         }
                         else {
@@ -76,7 +69,9 @@ public class Client {
                         boolean command1=true;
                         boolean v1 =false;
                         String file1 = null;
+                        String url2="";
                         ArrayList<String> h1 = new ArrayList<>();
+                        boolean local1 = false;
                         for(int i=2; i<(data.length);i++){
                             if (data[i].equals("-v")) {
                                 v1=true;
@@ -98,16 +93,29 @@ public class Client {
                                 else file1=temp1;
                                 i+=1;
                             }
-                            else if (data[i].contains("http:")||data[i].contains("https:")) { }
+                            else if (data[i].contains("http:")||data[i].contains("https:")) {
+                                String url1="";
+                                if(data[i].contains("http://localhost")||data[i].contains("https://localhost")){
+                                    url1=data[i];
+                                    local1=true;
+                                }
+                                else
+                                    url1=data[i];
+                                if(url1.startsWith("'")) url2 = url1.substring(1, url1.length() - 1);
+                                else url2 = url1;
+                            }
                             else command1=false;
                         }
-                        if(command1) {
+                        if(command1 && local1) {
                             try {
                                 List<String> header1 = h1.stream().distinct().collect(Collectors.toList());
                                 lib.get(v1,file1, (ArrayList<String>) header1, url2);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
+                        }
+                        else if(command1){
+                            lib.localrequest("get",url2 ,null);
                         }
                         else {
                             System.out.println("Please Enter The Right Command !!!");
@@ -131,7 +139,10 @@ public class Client {
                         if(data.length>2){
                             boolean command2 = true;
                             boolean v2 = false;
+                            boolean local2=false;
                             String file2=null;
+                            String url2="";
+                            String data1=null;
                             ArrayList<String> h2 = new ArrayList<>();
                             ArrayList<String> d2 = new ArrayList<>();
                             ArrayList<String> f2 = new ArrayList<>();
@@ -153,8 +164,12 @@ public class Client {
                                     if(temp1.startsWith("'")){
                                         String temp2= temp1.substring(1,temp1.length()-1);
                                         d2.add(temp2);
+                                        data1=data1+temp2;
                                     }
-                                    else d2.add(temp1);
+                                    else{
+                                        d2.add(temp1);
+                                        data1=data1+temp1;
+                                    }
                                     i+=1;
                                 }
                                 else if (data[i].equalsIgnoreCase("-f") || data[i].equalsIgnoreCase("--f")) {
@@ -174,16 +189,29 @@ public class Client {
                                     else file2=temp1;
                                     i+=1;
                                 }
-                                else if (data[i].contains("http:")||data[i].contains("https:")) { }
+                                else if (data[i].contains("http:")||data[i].contains("https:")) {
+                                    String url1="";
+                                    if(data[i].contains("http://localhost")||data[i].contains("https://localhost")){
+                                        url1=data[i];
+                                        local2=true;
+                                    }
+                                    else
+                                        url1=data[i];
+                                    if(url1.startsWith("'")) url2 = url1.substring(1, url1.length() - 1);
+                                    else url2 = url1;
+                                }
                                 else command2=false;
                             }
-                            if(command2) {
+                            if(command2 && local2) {
                                 try {
                                     List<String> header2 = h2.stream().distinct().collect(Collectors.toList());
                                     lib.post(v2,file2, (ArrayList<String>) header2,d2,f2,url2);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
+                            }
+                            else if(command2){
+                                lib.localrequest("post",url2,data1);
                             }
                             else {
                                 System.out.println("Please Enter The Right Command !!!");
@@ -207,6 +235,35 @@ public class Client {
                 System.out.println("Use \"httpc help\" for more information about commands.");
             }
         }
+        /*
+        else if (data[0].equalsIgnoreCase("httpfs")){
+            ArrayList<String> d3 = new ArrayList<>();
+            ArrayList<String> h3 = new ArrayList<>();
+            for(int i=2; i<(data.length);i++) {
+                if (data[i].equalsIgnoreCase("-d")){
+                    String temp1= data[i+1];
+                    if(temp1.startsWith("'")){
+                        String temp2= temp1.substring(1,temp1.length()-1);
+                        d3.add(temp2);
+                    }
+                    else d3.add(temp1);
+                    i+=1;
+                }
+                else if (data[i].equalsIgnoreCase("-h")){
+                    String temp1= data[i+1];
+                    if(temp1.startsWith("'")){
+                        String temp2= temp1.substring(1,temp1.length()-1);
+                        h3.add(temp2);
+                    }
+                    else h3.add(temp1);
+                    i+=1;
+                }
+                else if (data[i].contains("http:")||data[i].contains("https:")){
+
+                }
+            }
+        }
+        */
         else {
             System.out.println("Please Enter The Right Command !!!");
             System.out.println("The command should have \"httpc command [arguments]\" format");
