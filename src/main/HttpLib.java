@@ -266,6 +266,15 @@ public class HttpLib {
         fw.write(response);
         fw.close();
     }
+
+    public void localrequest(String method,String url,String data){
+
+        if(method.equalsIgnoreCase())
+
+
+
+    }
+
 }
 
 

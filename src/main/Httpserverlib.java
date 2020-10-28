@@ -13,9 +13,7 @@ public class Httpserverlib {
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
 
         if(f.exists()){
-
             if(f.isFile()){
-
                 response = "HTTP Found\r\n";
                 while((file_output=br.readLine())!=null){
 
@@ -23,14 +21,17 @@ public class Httpserverlib {
                 }
                 br.close();
             }else{
-
                 response = "Not a file, its a directory.";
-
             }
 
         }
         else{
             response = "HTTP 404 Not Found";
+        }
+
+        if(data[1].equals("/")){
+
+
         }
 
         return response;
@@ -45,7 +46,7 @@ public class Httpserverlib {
 
 
         if(f.exists()){
-            response = "Yes file exists";
+            response = "POST Complete";
             FileWriter fw = new FileWriter(f);
             fw.write(data[3]);
             fw.close();

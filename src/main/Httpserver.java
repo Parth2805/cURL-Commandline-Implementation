@@ -5,7 +5,6 @@ import java.util.Scanner;
 
 public class Httpserver {
 
-    static File f = new File("src/");
     static int port = 8080;
     static String dir = "src/main";
     static int clientnumber = 0;
