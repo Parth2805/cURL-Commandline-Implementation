@@ -106,7 +106,7 @@ public class Client {
                             }
                             else command1=false;
                         }
-                        if(command1 && local1) {
+                        if(command1 && !local1) {
                             try {
                                 List<String> header1 = h1.stream().distinct().collect(Collectors.toList());
                                 lib.get(v1,file1, (ArrayList<String>) header1, url2);
@@ -202,7 +202,7 @@ public class Client {
                                 }
                                 else command2=false;
                             }
-                            if(command2 && local2) {
+                            if(command2 && !local2) {
                                 try {
                                     List<String> header2 = h2.stream().distinct().collect(Collectors.toList());
                                     lib.post(v2,file2, (ArrayList<String>) header2,d2,f2,url2);
