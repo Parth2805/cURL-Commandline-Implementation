@@ -72,9 +72,23 @@ public class test {
 
         });
 
-        t1.start();
-        t2.start();
-        t3.start();
+        Thread t4 =  new Thread(()->{
+
+            try{
+                HttpLib lib = new HttpLib();
+                lib.localrequest("GET","http://localhost:808/get/data.txt",null);
+
+            }catch(Exception e){
+
+                e.printStackTrace();
+            }
+
+        });
+
+//        t1.start();
+//        t2.start();
+//        t3.start();
+        t4.start();
 
 
 

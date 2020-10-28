@@ -1,6 +1,5 @@
 import java.io.*;
-import java.net.Socket;
-import java.net.URL;
+import java.net.*;
 import java.util.ArrayList;
 
 
@@ -267,9 +266,44 @@ public class HttpLib {
         fw.close();
     }
 
-    public void localrequest(String method,String url,String data){
+    public void localrequest(String method,String url,String data) throws URISyntaxException, IOException {
 
-        if(method.equalsIgnoreCase())
+        String request = "";
+        Socket s=null;
+        PrintWriter pw =null;
+        if(method.equalsIgnoreCase("GET")){
+
+            request += "GET ";
+            query = url.substring(url.indexOf("get")+3);
+            request += query + " " + "\r\n";
+            int index = url.indexOf("localhost");
+            int port = Integer.parseInt(url.substring(index+10,url.indexOf("/",index+10)));
+            System.out.println("Request:" +request);
+
+            s = new Socket(InetAddress.getLocalHost(),8080);
+            pw = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
+            BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            pw.write(request);
+            pw.flush();
+            String output = "";
+            while((output = br.readLine())!=null){
+
+                System.out.println(output);
+
+            }
+
+            br.close();
+            s.close();
+
+
+        }else{
+
+
+
+
+
+        }
+
 
 
 
