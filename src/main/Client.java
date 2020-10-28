@@ -1,3 +1,4 @@
+import java.net.URISyntaxException;
 import java.util.*;
 import java.io.*;
 import java.util.stream.Collectors;
@@ -10,7 +11,7 @@ public class Client {
     }
 
     //Type checking & appropriate method calling
-    public static void methodPassing() throws IOException {
+    public static void methodPassing() throws IOException, URISyntaxException {
         HttpLib lib = new HttpLib();
         Scanner command = new Scanner(System.in);
         System.out.print(">");
@@ -106,7 +107,7 @@ public class Client {
                             }
                             else command1=false;
                         }
-                        if(command1 && local1) {
+                        if(command1 && !local1) {
                             try {
                                 List<String> header1 = h1.stream().distinct().collect(Collectors.toList());
                                 lib.get(v1,file1, (ArrayList<String>) header1, url2);
