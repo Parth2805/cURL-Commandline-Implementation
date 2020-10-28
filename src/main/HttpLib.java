@@ -280,7 +280,7 @@ public class HttpLib {
             int port = Integer.parseInt(url.substring(index+10,url.indexOf("/",index+10)));
             System.out.println("Request:" +request);
 
-            s = new Socket(InetAddress.getLocalHost(),8080);
+            s = new Socket(InetAddress.getLocalHost(),port);
             pw = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
             BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
             pw.write(request);
@@ -298,15 +298,26 @@ public class HttpLib {
 
         }else{
 
+            request += "POST ";
+            query = url.substring(url.indexOf("post")+4);
+            request += query + " -d " + data +"\r\n";
+            int index = url.indexOf("localhost");
+            int port = Integer.parseInt(url.substring(index+10,url.indexOf("/",index+10)));
+            System.out.println("Request:" +request);
+            s = new Socket(InetAddress.getLocalHost(),port);
+            pw = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
+            BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            pw.write(request);
+            pw.flush();
+            String output = "";
+            while((output = br.readLine())!=null){
 
+                System.out.println(output);
 
-
-
+            }
+            br.close();
+            s.close();
         }
-
-
-
-
     }
 
 }

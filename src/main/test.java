@@ -76,7 +76,20 @@ public class test {
 
             try{
                 HttpLib lib = new HttpLib();
-                lib.localrequest("GET","http://localhost:808/get/data.txt",null);
+                lib.localrequest("GET","http://localhost:8080/get/data.txt",null);
+
+            }catch(Exception e){
+
+                e.printStackTrace();
+            }
+
+        });
+
+        Thread t5 =  new Thread(()->{
+
+            try{
+                HttpLib lib = new HttpLib();
+                lib.localrequest("Post","http://localhost:8080/post/test/data.txt","test");
 
             }catch(Exception e){
 
@@ -88,7 +101,8 @@ public class test {
 //        t1.start();
 //        t2.start();
 //        t3.start();
-        t4.start();
+//        t4.start();
+        t5.start();
 
 
 

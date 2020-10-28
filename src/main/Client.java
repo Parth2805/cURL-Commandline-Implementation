@@ -203,7 +203,7 @@ public class Client {
                                 }
                                 else command2=false;
                             }
-                            if(command2 && local2) {
+                            if(command2 && !local2) {
                                 try {
                                     List<String> header2 = h2.stream().distinct().collect(Collectors.toList());
                                     lib.post(v2,file2, (ArrayList<String>) header2,d2,f2,url2);
@@ -212,7 +212,7 @@ public class Client {
                                 }
                             }
                             else if(command2){
-                                lib.localrequest("post",url2,data1);
+                                lib.localrequest("post",url2,d2.get(0));
                             }
                             else {
                                 System.out.println("Please Enter The Right Command !!!");
