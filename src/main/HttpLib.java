@@ -269,7 +269,7 @@ public class HttpLib {
 
     public void localrequest(String method,String url,String data){
 
-        if(method.equalsIgnoreCase())
+        System.out.println(method+"\n"+url+"\n"+data);
 
 
 
