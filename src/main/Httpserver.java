@@ -62,7 +62,7 @@ public class Httpserver {
             Socket s1 = ss.accept();
             String message="";
             clientnumber++;
-            System.out.println("Client:" + clientnumber +"connected");
+            System.out.println("Client:" + clientnumber +" connected");
 
             Httpserverlib request = new Httpserverlib();
 

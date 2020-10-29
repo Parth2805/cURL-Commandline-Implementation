@@ -138,7 +138,7 @@ public class HttpLib {
     }
 
 
-    void post(boolean verbose,String save_to_file, ArrayList<String> header, ArrayList<String> data, ArrayList<String> file, String url1) throws IOException {
+    public void post(boolean verbose,String save_to_file, ArrayList<String> header, ArrayList<String> data, ArrayList<String> file, String url1) throws IOException {
 
         URL url = new URL(url1);
 
@@ -289,7 +289,6 @@ public class HttpLib {
             while((output = br.readLine())!=null){
 
                 System.out.println(output);
-
             }
 
             br.close();
