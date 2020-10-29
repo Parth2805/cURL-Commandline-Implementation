@@ -1,4 +1,3 @@
-import java.net.URISyntaxException;
 import java.util.*;
 import java.io.*;
 import java.util.stream.Collectors;
@@ -11,7 +10,7 @@ public class Client {
     }
 
     //Type checking & appropriate method calling
-    public static void methodPassing() throws IOException, URISyntaxException {
+    public static void methodPassing() throws IOException {
         HttpLib lib = new HttpLib();
         Scanner command = new Scanner(System.in);
         System.out.print(">");
@@ -143,54 +142,11 @@ public class Client {
                             boolean local2=false;
                             String file2=null;
                             String url2="";
-                            String data1=null;
                             ArrayList<String> h2 = new ArrayList<>();
                             ArrayList<String> d2 = new ArrayList<>();
                             ArrayList<String> f2 = new ArrayList<>();
-                            for(int i=2;i<(data.length-1);i++) {
-                                if (data[i].equalsIgnoreCase("-v")) {
-                                    v2 = true;
-                                }
-                                else if (data[i].equalsIgnoreCase("-h") || data[i].equalsIgnoreCase("--h")) {
-                                    String temp1= data[i+1];
-                                    if(temp1.startsWith("'")){
-                                        String temp2= temp1.substring(1,temp1.length()-1);
-                                        h2.add(temp2);
-                                    }
-                                    else h2.add(temp1);
-                                    i+=1;
-                                }
-                                else if (data[i].equalsIgnoreCase("-d") || data[i].equalsIgnoreCase("--d")) {
-                                    String temp1= data[i+1];
-                                    if(temp1.startsWith("'")){
-                                        String temp2= temp1.substring(1,temp1.length()-1);
-                                        d2.add(temp2);
-                                        data1=data1+temp2;
-                                    }
-                                    else{
-                                        d2.add(temp1);
-                                        data1=data1+temp1;
-                                    }
-                                    i+=1;
-                                }
-                                else if (data[i].equalsIgnoreCase("-f") || data[i].equalsIgnoreCase("--f")) {
-                                    String temp1= data[i+1];
-                                    if(temp1.startsWith("'")){
-                                        String temp2= temp1.substring(1,temp1.length()-1);
-                                        f2.add(temp2);
-                                    }
-                                    else f2.add(temp1);
-                                    i+=1;
-                                }
-                                else if (data[i].equalsIgnoreCase("-o")) {
-                                    String temp1= data[i+1];
-                                    if(temp1.startsWith("'")){
-                                        file2= temp1.substring(1,temp1.length()-1);
-                                    }
-                                    else file2=temp1;
-                                    i+=1;
-                                }
-                                else if (data[i].contains("http:")||data[i].contains("https:")) {
+                            for(int i=2;i<(data.length-1);i++){
+                                if (data[i].contains("http:")||data[i].contains("https:")) {
                                     String url1="";
                                     if(data[i].contains("http://localhost")||data[i].contains("https://localhost")){
                                         url1=data[i];
@@ -201,23 +157,78 @@ public class Client {
                                     if(url1.startsWith("'")) url2 = url1.substring(1, url1.length() - 1);
                                     else url2 = url1;
                                 }
-                                else command2=false;
                             }
-                            if(command2 && !local2) {
-                                try {
-                                    List<String> header2 = h2.stream().distinct().collect(Collectors.toList());
-                                    lib.post(v2,file2, (ArrayList<String>) header2,d2,f2,url2);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                            if(local2){
+                                String data1="", data2="";
+                                if(input.contains("-d")){
+                                    int index=input.indexOf("-d")+2;
+                                    data1=data1+input.substring(index);
+                                    data2=data1.substring(2,data1.length()-1);
+                                    lib.localrequest("post",url2,data2);
+                                }
+                                else{
+                                    System.out.println("Please Enter The Right Command !!!");
+                                    System.out.println("Use \"httpc help post\" for more information about commands.");
                                 }
                             }
-                            else if(command2){
-                                lib.localrequest("post",url2,d2.get(0));
+                            else{
+                                for(int i=2;i<(data.length-1);i++) {
+                                    if (data[i].equalsIgnoreCase("-v")) {
+                                        v2 = true;
+                                    }
+                                    else if (data[i].equalsIgnoreCase("-h") || data[i].equalsIgnoreCase("--h")) {
+                                        String temp1= data[i+1];
+                                        if(temp1.startsWith("'")){
+                                            String temp2= temp1.substring(1,temp1.length()-1);
+                                            h2.add(temp2);
+                                        }
+                                        else h2.add(temp1);
+                                        i+=1;
+                                    }
+                                    else if (data[i].equalsIgnoreCase("-d") || data[i].equalsIgnoreCase("--d")) {
+                                        String temp1= data[i+1];
+                                        if(temp1.startsWith("'")){
+                                            String temp2= temp1.substring(1,temp1.length()-1);
+                                            d2.add(temp2);
+                                        }
+                                        else d2.add(temp1);
+
+                                        i+=1;
+                                    }
+                                    else if (data[i].equalsIgnoreCase("-f") || data[i].equalsIgnoreCase("--f")) {
+                                        String temp1= data[i+1];
+                                        if(temp1.startsWith("'")){
+                                            String temp2= temp1.substring(1,temp1.length()-1);
+                                            f2.add(temp2);
+                                        }
+                                        else f2.add(temp1);
+                                        i+=1;
+                                    }
+                                    else if (data[i].equalsIgnoreCase("-o")) {
+                                        String temp1= data[i+1];
+                                        if(temp1.startsWith("'")){
+                                            file2= temp1.substring(1,temp1.length()-1);
+                                        }
+                                        else file2=temp1;
+                                        i+=1;
+                                    }
+                                    else if (data[i].contains("http:")||data[i].contains("https:")) { }
+                                    else command2=false;
+                                }
+                                if(command2) {
+                                    try {
+                                        List<String> header2 = h2.stream().distinct().collect(Collectors.toList());
+                                        lib.post(v2,file2, (ArrayList<String>) header2,d2,f2,url2);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                else {
+                                    System.out.println("Please Enter The Right Command !!!");
+                                    System.out.println("Use \"httpc help post\" for more information about commands.");
+                                }
                             }
-                            else {
-                                System.out.println("Please Enter The Right Command !!!");
-                                System.out.println("Use \"httpc help post\" for more information about commands.");
-                            }
+
                         }
                         else{
                             System.out.println("Please Enter The Right Command !!!");
