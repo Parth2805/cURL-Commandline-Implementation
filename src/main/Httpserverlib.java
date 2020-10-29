@@ -54,7 +54,7 @@ public class Httpserverlib {
         if(f.exists()){
             response = "POST Complete";
             FileWriter fw = new FileWriter(f);
-            fw.write(data[3]);
+            fw.write(request.substring(request.indexOf("-d")+3));
             fw.close();
         }
         else{
