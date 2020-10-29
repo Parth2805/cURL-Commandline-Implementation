@@ -10,7 +10,7 @@ public class Httpserverlib {
         String data[] = request.split(" ");
 //        request = request.substring(5);
 
-
+        //Get files name
         if(data[1].equals("/")){
 
             File f = new File("src/main/");
