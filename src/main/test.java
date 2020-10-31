@@ -54,19 +54,12 @@ public class test {
 
         Thread t3 =  new Thread(()->{
 
-            Socket s = null;
-            PrintWriter pw = null;
-            try {
-                s = new Socket(InetAddress.getLocalHost(),8080);
-                pw = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
-                BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                pw.write("POST /test/data.txt -d hello3\r\n");
-                pw.flush();
-                String output = br.readLine();
-                System.out.println(output);
-                br.close();
-                s.close();
-            } catch (IOException e) {
+            try{
+                HttpLib lib = new HttpLib();
+                lib.localrequest("post","http://localhost:8080/post/test/data.txt","test2");
+
+            }catch(Exception e){
+
                 e.printStackTrace();
             }
 
@@ -76,7 +69,7 @@ public class test {
 
             try{
                 HttpLib lib = new HttpLib();
-                lib.localrequest("GET","http://localhost:8080/get/test/",null);
+                lib.localrequest("GET","http://localhost:8080/get/test/data.txt",null);
 
             }catch(Exception e){
 
@@ -89,7 +82,7 @@ public class test {
 
             try{
                 HttpLib lib = new HttpLib();
-                lib.localrequest("Get","http://localhost:8080/get/test/data.txt","test");
+                lib.localrequest("post","http://localhost:8080/post/test/data.txt","test");
 
             }catch(Exception e){
 
@@ -100,9 +93,9 @@ public class test {
 
 //        t1.start();
 //        t2.start();
-//        t3.start();
+        t3.start();
         t4.start();
-//        t5.start();
+        t5.start();
 
 
 

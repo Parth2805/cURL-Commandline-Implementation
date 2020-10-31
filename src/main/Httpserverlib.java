@@ -11,8 +11,14 @@ public class Httpserverlib {
 
         //Get files name
         if(data[1].endsWith("/")){
+            File f=null;
+            if(data[1].length()!=1){
+                String path = Httpserver.dir + data[1].substring(1,data[1].length()-1);
+                f = new File(path);
+            }else{
+                f = new File(Httpserver.dir);
+            }
 
-            File f = new File(Httpserver.dir);
             for(String files:f.list()){
 
                 response += files+"\r\n";
@@ -20,10 +26,11 @@ public class Httpserverlib {
 
         }else{
             String path = Httpserver.dir + data[1].substring(1);
+            System.out.println("Path:" + path);
             File f = new File(path);
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
             if(f.exists()){
                 if(f.isFile()){
+                    BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
                     response = "HTTP 200 Found\r\n";
                     while((file_output=br.readLine())!=null){
 
@@ -50,16 +57,13 @@ public class Httpserverlib {
         File f = new File(path);
 
 
-        if(f.exists()){
-            response = "HTTP 200 Post Successful";
-            FileWriter fw = new FileWriter(f);
-            fw.write(request.substring(request.indexOf("-d")+3));
-            fw.close();
-        }
-        else{
-            response = "HTTP 404 Not Found";
 
-        }
+        response = "HTTP 200 Post Successful";
+        FileWriter fw = new FileWriter(f);
+        fw.write(request.substring(request.indexOf("-d")+3));
+        fw.close();
+
+
 
         return response;
     }
