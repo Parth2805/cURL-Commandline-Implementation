@@ -6,13 +6,14 @@ import java.util.Scanner;
 public class Httpserver {
 
     static int port = 8080;
-    static String dir = "src/main";
+    static String dir = "src/main/";
     static int clientnumber = 0;
+    static boolean verbose = false;
 
     public static void main(String args[]) throws IOException {
 
 
-        boolean verbose = false;
+
 
         Scanner sc = new Scanner(System.in);
         String command = sc.nextLine();
@@ -62,14 +63,20 @@ public class Httpserver {
             Socket s1 = ss.accept();
             String message="";
             clientnumber++;
-            System.out.println("Client:" + clientnumber +" connected");
+            if(verbose){
+
+                System.out.println("Client:" + clientnumber +" connected");
+            }
+
 
             Httpserverlib request = new Httpserverlib();
-
             BufferedReader br = new BufferedReader(new InputStreamReader(s1.getInputStream()));
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(s1.getOutputStream()));
             String output = br.readLine();
 
+            if(verbose){
+                System.out.println(output);
+            }
             if(output.startsWith("GET")){
 
                 message=request.getrequest(output);
@@ -83,7 +90,12 @@ public class Httpserver {
             pw.flush();
             pw.close();
             s1.close();
-            System.out.println("Client:" + clientnumber +" disconnected");
+
+            if(verbose){
+
+                System.out.println("Client:" + clientnumber +" disconnected");
+
+            }
         }
 
 
