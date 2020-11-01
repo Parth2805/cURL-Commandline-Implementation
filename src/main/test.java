@@ -16,7 +16,7 @@ public class test {
                 s = new Socket(InetAddress.getLocalHost(),8080);
                 pw = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
                 BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                pw.write("GET /test/data.txt -d hello1\r\n");
+                pw.write("GET /test/data3.txt -d hello1\r\n");
                 pw.flush();
                 String output = "";
                 while((output = br.readLine())!=null){
@@ -40,7 +40,7 @@ public class test {
                 s = new Socket(InetAddress.getLocalHost(),8080);
                 pw = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
                 BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                pw.write("POST /test/data.txt -d hello2\r\n");
+                pw.write("POST /test/data3.txt -d hello2\r\n");
                 pw.flush();
                 String output = br.readLine();
                 System.out.println(output);
@@ -91,11 +91,26 @@ public class test {
 
         });
 
+        Thread t6 =  new Thread(()->{
+
+            try{
+                HttpLib lib = new HttpLib();
+                lib.localrequest("GET","http://localhost:8080/get/data3.txt",null);
+
+            }catch(Exception e){
+
+                e.printStackTrace();
+            }
+
+
+        });
+
 //        t1.start();
 //        t2.start();
-        t3.start();
-        t4.start();
-        t5.start();
+//        t3.start();
+//        t4.start();
+//        t5.start();
+        t6.start();
 
 
 

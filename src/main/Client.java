@@ -309,7 +309,7 @@ httpc post -h Content-Type:application/json --d {"Assignment":1} -d {"Assignment
 
 httpc post -h Content-Type:application/json -f {} -d {} 'http://httpbin.org/post' -o output.txt
 
-httpc post -h Content-Type:application/json -f data.txt 'http://httpbin.org/post' -o output.txt
+httpc post -h Content-Type:application/json -f data3.txt 'http://httpbin.org/post' -o output.txt
 
 httpc post -h Content-Type:application/json -d {"Assignment":1} -o output.txt 'http://httpbin.org/post'
 

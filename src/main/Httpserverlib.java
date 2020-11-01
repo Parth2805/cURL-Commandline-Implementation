@@ -1,6 +1,11 @@
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Httpserverlib {
+
+    static String init = Httpserver.dir;
+    static ArrayList<String> files;
 
     synchronized String getrequest(String request) throws IOException {
 
@@ -26,7 +31,7 @@ public class Httpserverlib {
 
         }else{
             String path = Httpserver.dir + data[1].substring(1);
-            System.out.println("Path:" + path);
+//            System.out.println("Path:" + path);
             File f = new File(path);
             if(f.exists()){
                 if(f.isFile()){
@@ -43,7 +48,21 @@ public class Httpserverlib {
 
             }
             else{
-                response = "HTTP 404 Not Found";
+                String filenames[] = request.split("/");
+                System.out.println("Filename:" + filenames[filenames.length-1]+ "\r\nPath:" + Httpserver.dir+data[1].substring(1));
+                files =  new ArrayList<>();
+                filesystem(new File("src/main/"));
+                printdata();
+                if(files.contains(filenames[filenames.length-1].trim())){
+
+                    response = "HTTP 404.1 Found/Access Denied[Not in current directory]";
+
+                }else{
+
+                    response = "HTTP 404 Not Found";
+
+                }
+
             }
         }
         return response;
@@ -56,15 +75,40 @@ public class Httpserverlib {
         String path = Httpserver.dir + data[1].substring(1) ;
         File f = new File(path);
 
-
-
         response = "HTTP 200 Post Successful";
         FileWriter fw = new FileWriter(f);
         fw.write(request.substring(request.indexOf("-d")+3));
         fw.close();
 
-
-
         return response;
     }
+
+
+    static void filesystem(File file){
+
+
+        for(File name : file.listFiles()){
+
+//            System.out.println(name.getName());
+            if(name.isFile()){
+
+                files.add(name.getName());
+
+            }else{
+
+                filesystem(name);
+            }
+        }
+    }
+
+    static void printdata(){
+
+        for(String file:files){
+
+            System.out.println(file);
+        }
+
+    }
+
+
 }
