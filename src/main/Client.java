@@ -69,7 +69,6 @@ public class Client {
                     if(data.length>2){
                         boolean command1=true;
                         boolean v1 =false;
-                        boolean head1=false;
                         String file1 = null;
                         String url2="";
                         ArrayList<String> h1 = new ArrayList<>();
@@ -79,13 +78,16 @@ public class Client {
                                 v1=true;
                             }
                             else if (data[i].equalsIgnoreCase("-h") || data[i].equalsIgnoreCase("--h")) {
-                                head1=true;
                                 String temp1= data[i+1];
                                 if(temp1.startsWith("'")){
                                     String temp2= temp1.substring(1,temp1.length()-1);
                                     h1.add(temp2);
+                                    Httpserverlib.header.add(temp2);
                                 }
-                                else h1.add(temp1);
+                                else{
+                                    h1.add(temp1);
+                                    Httpserverlib.header.add(temp1);
+                                }
                                 i+=1;
                             }
                             else if (data[i].equalsIgnoreCase("-o")) {
@@ -118,12 +120,7 @@ public class Client {
                             }
                         }
                         else if(command1){
-                            if(head1){
-                                List<String> h11 = h1.stream().distinct().collect(Collectors.toList());
-                                lib.localrequest("get",url2 ,null,(ArrayList<String>)h11);
-                            }
-                            else
-                                lib.localrequest("get",url2 ,null,null);
+                                lib.localrequest("get",url2 ,null);
                         }
                         else {
                             System.out.println("Please Enter The Right Command !!!");
@@ -172,7 +169,7 @@ public class Client {
                                     int index=input.indexOf("-d")+2;
                                     data1=data1+input.substring(index);
                                     data2=data1.substring(2,data1.length()-1);
-                                    lib.localrequest("post",url2,data2,null);
+                                    lib.localrequest("post",url2,data2);
                                 }
                                 else{
                                     System.out.println("Please Enter The Right Command !!!");

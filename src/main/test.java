@@ -56,7 +56,7 @@ public class test {
 
             try{
                 HttpLib lib = new HttpLib();
-                lib.localrequest("post","http://localhost:8080/post/test/data.txt","test2",null);
+                lib.localrequest("post","http://localhost:8080/post/test/data.txt","test2");
 
             }catch(Exception e){
 
@@ -69,7 +69,7 @@ public class test {
 
             try{
                 HttpLib lib = new HttpLib();
-                lib.localrequest("GET","http://localhost:8080/get/test/data.txt",null,null);
+                lib.localrequest("GET","http://localhost:8080/get/test/data.txt",null);
 
             }catch(Exception e){
 
@@ -82,7 +82,7 @@ public class test {
 
             try{
                 HttpLib lib = new HttpLib();
-                lib.localrequest("post","http://localhost:8080/post/test/data.txt","test",null);
+                lib.localrequest("post","http://localhost:8080/post/test/data.txt","test");
 
             }catch(Exception e){
 
@@ -95,7 +95,7 @@ public class test {
 
             try{
                 HttpLib lib = new HttpLib();
-                lib.localrequest("GET","http://localhost:8080/get/data3.txt",null,null);
+                lib.localrequest("GET","http://localhost:8080/get/data3.txt",null);
 
             }catch(Exception e){
 
