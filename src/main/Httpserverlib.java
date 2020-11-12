@@ -6,7 +6,7 @@ public class Httpserverlib {
 
     static String init = Httpserver.dir;
     static ArrayList<String> files;
-    static ArrayList<String> header;
+    static ArrayList<String> header=null;
 
     synchronized String getrequest(String request) throws IOException {
 
@@ -16,19 +16,21 @@ public class Httpserverlib {
         Boolean content_type = false;
         Boolean content_disposition = false;
 
-        for(String headers : header){
+        if(header!=null){
+            for(String headers : header){
+                if(headers.contains("Content-Type")){
 
-            if(headers.contains("Content-Type")){
+                    content_type = true;
+                    String temp[] = headers.split(":");
+                    content = temp[1];
+                }
+                if(headers.contains("Content-Disposition")){
 
-                content_type = true;
-                String temp[] = headers.split(":");
-                content = temp[1];
-            }
-            if(headers.contains("Content-Disposition")){
-
-                content_disposition=true;
+                    content_disposition=true;
+                }
             }
         }
+
 
         String data[] = request.split(" ");
 //        request = request.substring(5);
