@@ -12,6 +12,24 @@ public class Httpserverlib {
 
 //        System.out.println(request);
         String response = "",file_output = "";
+        String content = "";
+        Boolean content_type = false;
+        Boolean content_disposition = false;
+
+        for(String headers : header){
+
+            if(headers.contains("Content-Type")){
+
+                content_type = true;
+                String temp[] = headers.split(":");
+                content = temp[1];
+            }
+            if(headers.contains("Content-Disposition")){
+
+                content_disposition=true;
+            }
+        }
+
         String data[] = request.split(" ");
 //        request = request.substring(5);
 
@@ -27,8 +45,22 @@ public class Httpserverlib {
 
             for(String files:f.list()){
 
-                response += files+"\r\n";
+                if(content_type){
+
+                    if(files.contains(content)){
+
+                        response += files+"\r\n";
+
+                    }
+
+                }else{
+
+                    response += files+"\r\n";
+
+                }
+
             }
+            header = null;
 
         }else{
             String path = Httpserver.dir + data[1].substring(1);
