@@ -119,8 +119,8 @@ public class Client {
                         }
                         else if(command1){
                             if(head1){
-                                String h11= h1.get(0);
-                                lib.localrequest("get",url2 ,null,h11);
+                                List<String> h11 = h1.stream().distinct().collect(Collectors.toList());
+                                lib.localrequest("get",url2 ,null,(ArrayList<String>)h11);
                             }
                             else
                                 lib.localrequest("get",url2 ,null,null);
