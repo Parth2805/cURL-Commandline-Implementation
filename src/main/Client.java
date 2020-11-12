@@ -69,6 +69,7 @@ public class Client {
                     if(data.length>2){
                         boolean command1=true;
                         boolean v1 =false;
+                        boolean head1=false;
                         String file1 = null;
                         String url2="";
                         ArrayList<String> h1 = new ArrayList<>();
@@ -78,6 +79,7 @@ public class Client {
                                 v1=true;
                             }
                             else if (data[i].equalsIgnoreCase("-h") || data[i].equalsIgnoreCase("--h")) {
+                                head1=true;
                                 String temp1= data[i+1];
                                 if(temp1.startsWith("'")){
                                     String temp2= temp1.substring(1,temp1.length()-1);
@@ -116,7 +118,12 @@ public class Client {
                             }
                         }
                         else if(command1){
-                            lib.localrequest("get",url2 ,null);
+                            if(head1){
+                                String h11= h1.get(0);
+                                lib.localrequest("get",url2 ,null,h11);
+                            }
+                            else
+                                lib.localrequest("get",url2 ,null,null);
                         }
                         else {
                             System.out.println("Please Enter The Right Command !!!");
@@ -165,7 +172,7 @@ public class Client {
                                     int index=input.indexOf("-d")+2;
                                     data1=data1+input.substring(index);
                                     data2=data1.substring(2,data1.length()-1);
-                                    lib.localrequest("post",url2,data2);
+                                    lib.localrequest("post",url2,data2,null);
                                 }
                                 else{
                                     System.out.println("Please Enter The Right Command !!!");
