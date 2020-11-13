@@ -82,11 +82,9 @@ public class Client {
                                 if(temp1.startsWith("'")){
                                     String temp2= temp1.substring(1,temp1.length()-1);
                                     h1.add(temp2);
-                                    Httpserverlib.header.add(temp2);
                                 }
                                 else{
                                     h1.add(temp1);
-                                    Httpserverlib.header.add(temp1);
                                 }
                                 i+=1;
                             }

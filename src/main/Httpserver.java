@@ -12,9 +12,6 @@ public class Httpserver {
 
     public static void main(String args[]) throws IOException {
 
-
-
-
         Scanner sc = new Scanner(System.in);
         String command = sc.nextLine();
         String words[] = command.split(" ");
