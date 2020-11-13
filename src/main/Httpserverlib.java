@@ -87,12 +87,13 @@ public class Httpserverlib {
 
                         response += file_output+"\r\n";
                     }
-                    System.out.println("Content Dis:" + content_disposition + " Content-type:" + disposition_type);
+//                    System.out.println("Content Dis:" + content_disposition + " Content-type:" + disposition_type);
                     if(content_disposition && disposition_type.equals("attachment")){
 
                         fw = new File("output.txt");
                         fww = new FileWriter(fw);
                         fww.write(response);
+                        fww.close();
                         response = "HTTP 200.1 Found. Action Complete to File\r\n";
                     }
 
