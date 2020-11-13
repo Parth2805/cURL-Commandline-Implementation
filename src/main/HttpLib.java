@@ -275,9 +275,26 @@ public class HttpLib {
 
             request += "GET ";
             query = url.substring(url.indexOf("get")+3);
-            request += query + " " + "\r\n";
+            request += query;
+
+            if(header!=null){
+
+                request += " -h";
+                for(int i=0;i<header.size();i++){
+
+                    request += " " + header.get(i);
+                }
+                request += " \r\n";
+
+            }else{
+
+                request += " \r\n";
+            }
+
             int index = url.indexOf("localhost");
             int port = Integer.parseInt(url.substring(index+10,url.indexOf("/",index+10)));
+
+
             System.out.println("Request:" +request);
 
             s = new Socket(InetAddress.getLocalHost(),port);

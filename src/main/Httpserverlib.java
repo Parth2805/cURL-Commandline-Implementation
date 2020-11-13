@@ -6,17 +6,24 @@ public class Httpserverlib {
 
     static String init = Httpserver.dir;
     static ArrayList<String> files;
+    static ArrayList<String> header;
 
     synchronized String getrequest(String request) throws IOException {
 
 //        System.out.println(request);
+
         String response = "",file_output = "";
         String content = "";
         Boolean content_type = false;
         Boolean content_disposition = false;
-        System.out.println(header.size());
+        String disposition_type ="";
+        if(request.contains("-h")){
+            header =  new ArrayList<>();
+            request=addheader(request);
+        }
+
+//        System.out.println(header.size());
         for(String headers : header){
-            System.out.println(headers);
             if(headers.contains("Content-Type")){
 
                 content_type = true;
@@ -26,13 +33,13 @@ public class Httpserverlib {
             if(headers.contains("Content-Disposition")){
 
                 content_disposition=true;
+                String temp[] = headers.split(":");
+                disposition_type = temp[1];
+
             }
         }
 
-        System.out.println("Content-Type:" + content_type);
-
         String data[] = request.split(" ");
-//        request = request.substring(5);
 
         //Get files name
         if(data[1].endsWith("/")){
@@ -66,6 +73,8 @@ public class Httpserverlib {
             String path = Httpserver.dir + data[1].substring(1);
 //            System.out.println("Path:" + path);
             File f = new File(path);
+            File fw;
+            FileWriter fww = null;
             if(f.exists()){
                 if(f.isFile()){
                     BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
@@ -74,6 +83,15 @@ public class Httpserverlib {
 
                         response += file_output+"\r\n";
                     }
+                    System.out.println("Content Dis:" + content_disposition + " Content-type:" + disposition_type);
+                    if(content_disposition && disposition_type.equals("attachment")){
+
+                        fw = new File("output.txt");
+                        fww = new FileWriter(fw);
+                        fww.write(response);
+                        response = "HTTP 200.1 Found. Action Complete to File\r\n";
+                    }
+
                     br.close();
                 }else{
                     response = "Not a file, its a directory.";
@@ -141,6 +159,28 @@ public class Httpserverlib {
             System.out.println(file);
         }
 
+    }
+
+    public String addheader(String request){
+
+        String temp[]= request.split(" ");
+        int index=0;
+        for(int i=0;i<temp.length;i++){
+
+            if(temp[i].equals("-h")){
+
+                index = i + 1;
+
+            }
+        }
+
+        for(int i=index;i<temp.length;i++){
+
+            header.add(temp[i]);
+
+        }
+
+        return request.substring(0,request.indexOf("-h")-1).trim();
     }
 
 
