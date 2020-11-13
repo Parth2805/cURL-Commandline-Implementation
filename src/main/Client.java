@@ -72,6 +72,7 @@ public class Client {
                         String file1 = null;
                         String url2="";
                         ArrayList<String> h1 = new ArrayList<>();
+                        ArrayList<String> head = new ArrayList<>();
                         boolean local1 = false;
                         for(int i=2; i<(data.length);i++){
                             if (data[i].equals("-v")) {
@@ -82,11 +83,11 @@ public class Client {
                                 if(temp1.startsWith("'")){
                                     String temp2= temp1.substring(1,temp1.length()-1);
                                     h1.add(temp2);
-                                    Httpserverlib.header.add(temp2);
+                                    head.add(temp2);
                                 }
-                                else{
+                                else {
                                     h1.add(temp1);
-                                    Httpserverlib.header.add(temp1);
+                                    head.add(temp1);
                                 }
                                 i+=1;
                             }
@@ -120,7 +121,7 @@ public class Client {
                             }
                         }
                         else if(command1){
-                                lib.localrequest("get",url2 ,null);
+                                lib.localrequest("get",url2 ,null,head);
                         }
                         else {
                             System.out.println("Please Enter The Right Command !!!");
@@ -169,7 +170,7 @@ public class Client {
                                     int index=input.indexOf("-d")+2;
                                     data1=data1+input.substring(index);
                                     data2=data1.substring(2,data1.length()-1);
-                                    lib.localrequest("post",url2,data2);
+                                    lib.localrequest("post",url2,data2,null);
                                 }
                                 else{
                                     System.out.println("Please Enter The Right Command !!!");
