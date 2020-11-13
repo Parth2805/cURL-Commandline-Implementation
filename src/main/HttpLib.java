@@ -277,7 +277,7 @@ public class HttpLib {
             query = url.substring(url.indexOf("get")+3);
             request += query;
 
-            if(header!=null){
+            if(header.size()>0){
 
                 request += " -h";
                 for(int i=0;i<header.size();i++){
