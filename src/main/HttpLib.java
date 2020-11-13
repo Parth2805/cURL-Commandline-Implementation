@@ -295,7 +295,7 @@ public class HttpLib {
             int port = Integer.parseInt(url.substring(index+10,url.indexOf("/",index+10)));
 
 
-            System.out.println("Request:" +request);
+//            System.out.println("Request:" +request);
 
             s = new Socket(InetAddress.getLocalHost(),port);
             pw = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
