@@ -266,7 +266,7 @@ public class HttpLib {
         fw.close();
     }
 
-    public void localrequest(String method,String url,String data,String content) throws URISyntaxException, IOException {
+    public void localrequest(String method,String url,String data,ArrayList<String> header) throws URISyntaxException, IOException {
 
         String request = "";
         Socket s=null;

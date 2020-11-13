@@ -6,8 +6,6 @@ public class Httpserverlib {
 
     static String init = Httpserver.dir;
     static ArrayList<String> files;
-    static ArrayList<String> header;
-
 
     synchronized String getrequest(String request) throws IOException {
 
