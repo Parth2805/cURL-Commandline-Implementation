@@ -1,6 +1,7 @@
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
+
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,6 +11,8 @@ public class Httpserver {
     static String dir = "src/main/";
     static int clientnumber = 0;
     static boolean verbose = false;
+    static int routerport = 3000;
+    static int sequencenumber = 100;
 
     public static void main(String args[]) throws IOException {
 
@@ -54,11 +57,15 @@ public class Httpserver {
 
     static void serverrunning() throws IOException {
 
-        ServerSocket ss = new ServerSocket(port);
+        DatagramSocket ss = new DatagramSocket(port);
 
 
         while (true) {
-            Socket s1 = ss.accept();
+
+            byte buffer[] =  new byte[Packet.MAX_LEN];
+            DatagramPacket dp = new DatagramPacket(buffer,buffer.length);
+            ss.receive(dp);
+            Packet request_packet = Packet.fromBytes(dp.getData());
             String message="";
             clientnumber++;
             if(verbose){
@@ -68,9 +75,11 @@ public class Httpserver {
 
 
             Httpserverlib request = new Httpserverlib();
-            BufferedReader br = new BufferedReader(new InputStreamReader(s1.getInputStream()));
-            PrintWriter pw = new PrintWriter(new OutputStreamWriter(s1.getOutputStream()));
-            String output = br.readLine();
+            String output = new String(request_packet.getPayload());
+
+//            BufferedReader br = new BufferedReader(new InputStreamReader(s1.getInputStream()));
+//            PrintWriter pw = new PrintWriter(new OutputStreamWriter(s1.getOutputStream()));
+//            String output = br.readLine();
 
             if(verbose){
                 System.out.println(output);
@@ -84,10 +93,18 @@ public class Httpserver {
                 message=request.postrequest(output);
 
             }
-            pw.write(message+"\r\n");
-            pw.flush();
-            pw.close();
-            s1.close();
+//            message+="\r\n";
+
+            Packet response =  new Packet(Packet.datatype.DATA.type,sequencenumber,InetAddress.getLocalHost(),request_packet.getPeerPort(),message.trim().getBytes());
+            DatagramPacket response_packet = new DatagramPacket(response.toBytes(),response.toBytes().length,InetAddress.getLocalHost(),routerport);
+
+            DatagramSocket s = new DatagramSocket();
+            s.send(response_packet);
+//            pw.write(message+"\r\n");
+//            pw.flush();
+//            pw.close();
+//            s1.close();
+            s.close();
 
             if(verbose){
 
@@ -95,6 +112,8 @@ public class Httpserver {
 
             }
         }
+
+
 
 
     }

@@ -107,10 +107,10 @@ public class test {
 
 //        t1.start();
 //        t2.start();
-        t3.start();
+//        t3.start();
         t4.start();
-        t5.start();
-//        t6.start();
+//        t5.start();
+        t6.start();
 
 
 

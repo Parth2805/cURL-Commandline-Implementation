@@ -105,7 +105,7 @@ public class Httpserverlib {
             }
             else{
                 String filenames[] = request.split("/");
-                System.out.println("Filename:" + filenames[filenames.length-1]+ "\r\nPath:" + Httpserver.dir+data[1].substring(1));
+//                System.out.println("Filename:" + filenames[filenames.length-1]+ "\r\nPath:" + Httpserver.dir+data[1].substring(1));
                 files =  new ArrayList<>();
                 filesystem(new File("src/main/"));
                 printdata();
@@ -121,6 +121,7 @@ public class Httpserverlib {
 
             }
         }
+        System.out.println("Response on server:\n" + response );
         return response;
     }
 
