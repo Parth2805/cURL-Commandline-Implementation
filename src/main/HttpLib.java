@@ -20,6 +20,7 @@ public class HttpLib {
     static int sequencenumber = 100;
     int routerport = 3000;
 
+
     public void get(Boolean verbose,String save_to_file,ArrayList<String> header,String url1) throws IOException {
 
         URL url = new URL(url1);
@@ -274,9 +275,10 @@ public class HttpLib {
     public void  localrequest(String method,String url,String data,ArrayList<String> header) throws URISyntaxException, IOException {
 
         String request = "";
-        clientports= clientports+1;
-        DatagramSocket s = new DatagramSocket(clientports);
 
+        System.out.println(clientports);
+        DatagramSocket s = new DatagramSocket(clientports);
+//        clientports = clientports+1;
 //        Socket s=null;
 //        PrintWriter pw =null;
         if(method.equalsIgnoreCase("GET")){
@@ -307,18 +309,18 @@ public class HttpLib {
             byte[] sending_byte = sending.toBytes();
             DatagramPacket request_packet = new DatagramPacket(sending_byte,sending_byte.length,InetAddress.getLocalHost(),routerport);
             s.send(request_packet);
-            System.out.println("Packet_sent");
+//            System.out.println("Packet_sent");
 
             byte[] received = new byte[Packet.MAX_LEN];
             DatagramPacket response = new DatagramPacket(received,received.length);
 
             s.receive(response);
 
-            System.out.println("Packet_received");
+//            System.out.println("Packet_received");
             Packet response_packet = Packet.fromBytes(response.getData());
             System.out.println(new String(response_packet.getPayload()));
 
-//            s.close();
+            s.close();
 
         }else{
 
@@ -328,18 +330,23 @@ public class HttpLib {
             int index = url.indexOf("localhost");
             int port = Integer.parseInt(url.substring(index+10,url.indexOf("/",index+10)));
             System.out.println("Request:" +request);
-//            s = new Socket(InetAddress.getLocalHost(),port);
-//            pw = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
-//            BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-//            pw.write(request);
-//            pw.flush();
             String output = "";
-//            while((output = br.readLine())!=null){
-//
-//                System.out.println(output);
-//
-//            }
-//            br.close();
+
+            Packet sending =  new Packet(Packet.datatype.DATA.type,sequencenumber,InetAddress.getLocalHost(),port,request.getBytes());
+            byte[] sending_byte = sending.toBytes();
+            DatagramPacket request_packet = new DatagramPacket(sending_byte,sending_byte.length,InetAddress.getLocalHost(),routerport);
+            s.send(request_packet);
+//            System.out.println("Packet_sent");
+
+            byte[] received = new byte[Packet.MAX_LEN];
+            DatagramPacket response = new DatagramPacket(received,received.length);
+
+            s.receive(response);
+
+//            System.out.println("Packet_received");
+            Packet response_packet = Packet.fromBytes(response.getData());
+            System.out.println(new String(response_packet.getPayload()));
+
             s.close();
         }
     }

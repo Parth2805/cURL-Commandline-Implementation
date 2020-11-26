@@ -95,7 +95,7 @@ public class test {
 
             try{
                 HttpLib lib = new HttpLib();
-                lib.localrequest("GET","http://localhost:8080/get/data3.txt",null,null);
+                lib.localrequest("GET","http://localhost:8080/get/test/data3.txt",null,null);
 
             }catch(Exception e){
 
@@ -108,9 +108,9 @@ public class test {
 //        t1.start();
 //        t2.start();
 //        t3.start();
-        t4.start();
-//        t5.start();
-        t6.start();
+//        t4.start();
+        t5.start();
+//        t6.start();
 
 
 
