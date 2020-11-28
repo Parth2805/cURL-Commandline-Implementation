@@ -274,13 +274,12 @@ public class HttpLib {
 
     public void  localrequest(String method,String url,String data,ArrayList<String> header) throws URISyntaxException, IOException {
 
-        String request = "";
 
-        System.out.println(clientports);
-        DatagramSocket s = new DatagramSocket(clientports);
-//        clientports = clientports+1;
-//        Socket s=null;
-//        PrintWriter pw =null;
+
+        String request = "";
+        DatagramSocket s = threewayhandshake();
+//        DatagramSocket s = new DatagramSocket(clientports);
+
         if(method.equalsIgnoreCase("GET")){
 
             request += "GET ";
@@ -308,15 +307,18 @@ public class HttpLib {
             Packet sending =  new Packet(Packet.datatype.DATA.type,sequencenumber,InetAddress.getLocalHost(),port,request.getBytes());
             byte[] sending_byte = sending.toBytes();
             DatagramPacket request_packet = new DatagramPacket(sending_byte,sending_byte.length,InetAddress.getLocalHost(),routerport);
+
+
+
             s.send(request_packet);
-//            System.out.println("Packet_sent");
+            System.out.println("Packet_sent");
 
             byte[] received = new byte[Packet.MAX_LEN];
             DatagramPacket response = new DatagramPacket(received,received.length);
 
             s.receive(response);
 
-//            System.out.println("Packet_received");
+            System.out.println("Packet_received");
             Packet response_packet = Packet.fromBytes(response.getData());
             System.out.println(new String(response_packet.getPayload()));
 
@@ -350,6 +352,44 @@ public class HttpLib {
             s.close();
         }
     }
+
+    DatagramSocket threewayhandshake() throws IOException {
+
+
+        DatagramSocket s = new DatagramSocket();
+        byte temp[] = new byte[Packet.MIN_LEN];
+        Packet one = new Packet(Packet.datatype.SYN.type,sequencenumber,InetAddress.getLocalHost(),Httpserver.port,temp);
+        DatagramPacket pd  = new DatagramPacket(one.toBytes(),one.toBytes().length,InetAddress.getLocalHost(),3000);
+        s.send(pd);
+        sequencenumber++;
+
+        System.out.println("Setting up Connection");
+
+        byte temp2[] = new byte[Packet.MAX_LEN];
+        DatagramPacket pd2 = new DatagramPacket(temp2,temp2.length);
+
+        s.receive(pd2);
+        Packet two = Packet.fromBytes(pd2.getData());
+
+        if(two.getType()==Packet.datatype.SYNACK.type){
+
+            System.out.println("Connection Successful");
+            Packet ack = new Packet(Packet.datatype.ACK.type,sequencenumber,InetAddress.getLocalHost(),two.getPeerPort(),new byte[Packet.MIN_LEN]);
+            DatagramPacket ackpkt = new DatagramPacket(ack.toBytes(),ack.toBytes().length,InetAddress.getLocalHost(),routerport);
+            s.send(ackpkt);
+            return s;
+
+        }
+        else{
+
+            System.out.println("Connection not successful");
+
+        }
+        return s;
+
+    }
+
+
 
 }
 

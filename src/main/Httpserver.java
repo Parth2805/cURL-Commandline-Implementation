@@ -58,7 +58,8 @@ public class Httpserver {
     static void serverrunning() throws IOException {
 
         DatagramSocket ss = new DatagramSocket(port);
-
+        boolean part1 = false;
+        boolean part2 = false;
 
         while (true) {
 
@@ -66,51 +67,73 @@ public class Httpserver {
             DatagramPacket dp = new DatagramPacket(buffer,buffer.length);
             ss.receive(dp);
             Packet request_packet = Packet.fromBytes(dp.getData());
-            String message="";
-            clientnumber++;
-            if(verbose){
 
-                System.out.println("Client:" + clientnumber +" connected");
-            }
+            if(request_packet.getType()==Packet.datatype.SYN.type){
 
 
-            Httpserverlib request = new Httpserverlib();
-            String output = new String(request_packet.getPayload());
+                Packet synackpacket = new Packet(Packet.datatype.SYNACK.type,sequencenumber,request_packet.getPeerAddress(),request_packet.getPeerPort(),("ACK:"+ request_packet.getSequenceNumber()).getBytes());
+                DatagramPacket syndp = new DatagramPacket(synackpacket.toBytes(),synackpacket.toBytes().length,dp.getAddress(),dp.getPort());
+                ss.send(syndp);
+                sequencenumber++;
 
-//            BufferedReader br = new BufferedReader(new InputStreamReader(s1.getInputStream()));
-//            PrintWriter pw = new PrintWriter(new OutputStreamWriter(s1.getOutputStream()));
-//            String output = br.readLine();
+                byte temp[] = new byte[Packet.MAX_LEN];
+                DatagramPacket recdp = new DatagramPacket(temp,temp.length);
+                ss.receive(recdp);
 
-            if(verbose){
-                System.out.println(output);
-            }
-            if(output.startsWith("GET")){
+                Packet ack = Packet.fromBytes(recdp.getData());
+                if(ack.getType()==Packet.datatype.ACK.type){
 
-                message=request.getrequest(output);
-
-            }else if(output.startsWith("POST")){
-
-                message=request.postrequest(output);
+                }
 
             }
+            if(request_packet.getType()==Packet.datatype.DATA.type){
+
+                String message="";
+                clientnumber++;
+                if(verbose){
+                    System.out.println("Client:" + clientnumber +" connected");
+                }
+
+
+                Httpserverlib request = new Httpserverlib();
+                String output = new String(request_packet.getPayload());
+
+
+                if(verbose){
+                    System.out.println(output);
+                }
+                if(output.startsWith("GET")){
+
+                    message=request.getrequest(output);
+
+                }else if(output.startsWith("POST")){
+
+                    message=request.postrequest(output);
+
+                }
 //            message+="\r\n";
 
-            Packet response =  new Packet(Packet.datatype.DATA.type,sequencenumber,InetAddress.getLocalHost(),request_packet.getPeerPort(),message.trim().getBytes());
-            DatagramPacket response_packet = new DatagramPacket(response.toBytes(),response.toBytes().length,InetAddress.getLocalHost(),routerport);
+                Packet response =  new Packet(Packet.datatype.DATA.type,sequencenumber,InetAddress.getLocalHost(),request_packet.getPeerPort(),message.trim().getBytes());
+                DatagramPacket response_packet = new DatagramPacket(response.toBytes(),response.toBytes().length,InetAddress.getLocalHost(),routerport);
 
-            DatagramSocket s = new DatagramSocket();
-            s.send(response_packet);
-//            pw.write(message+"\r\n");
-//            pw.flush();
-//            pw.close();
-//            s1.close();
-            s.close();
+                DatagramSocket s = new DatagramSocket();
+                s.send(response_packet);
 
-            if(verbose){
+                s.close();
 
-                System.out.println("Client:" + clientnumber +" disconnected");
+                if(verbose){
+
+                    System.out.println("Client:" + clientnumber +" disconnected");
+
+                }
+
+
 
             }
+
+
+
+
         }
 
 
