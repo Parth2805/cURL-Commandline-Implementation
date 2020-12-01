@@ -17,6 +17,7 @@ public class Httpserver {
     static long sequencenumber = 0;
     int window = 4;
     static int nop = -1;
+    static int MAX = 1013;
 
     public static void main(String args[]) throws IOException {
 
@@ -124,20 +125,20 @@ public class Httpserver {
 
                 //Make packets to send
                 byte responsebytes[] = message.getBytes();
-                if(message.length()>Packet.MAX_LEN){
+                if(message.length()>MAX){
 
-                    byte temp[] = new byte[Packet.MAX_LEN];
+                    byte temp[] = new byte[MAX];
                     int j=0;
                     for(int i=0;i<responsebytes.length;i++){
 
                         temp[j] = responsebytes[i];
                         j++;
-                        if(j==Packet.MAX_LEN-1){
+                        if(j==MAX){
 
                             Packet p =  new Packet(Packet.datatype.DATA.type,sequencenumber,InetAddress.getLocalHost(),request_packet.getPeerPort(),temp);
                             data.put(sequencenumber,p);
                             sequencenumber++;
-                            temp = new byte[Packet.MAX_LEN];
+                            temp = new byte[MAX];
                             j=0;
 
                         }
@@ -157,13 +158,12 @@ public class Httpserver {
                 data.put(sequencenumber,p);
                 sequencenumber++;
 
-                nop = data.size();
-
-                System.out.println("Printing ds:");
-                for(long i : data.keySet()){
-
-                    System.out.println(new String(data.get(i).getPayload()));
-                }
+//                System.out.println("Printing ds:");
+//                for(long i : data.keySet()){
+//                    System.out.println("Packet:" + i + ":" + data.get(i).getPayload().length + ":" + Packet.MAX_LEN);
+//                    System.out.println(new String(data.get(i).getPayload()));
+//                    System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------");
+//                }
 
                 sendpackets(data);
 
@@ -189,6 +189,10 @@ public class Httpserver {
         DatagramSocket s = new DatagramSocket();
 //        System.out.println();
         for(Long i:data.keySet()){
+
+            System.out.println("Packet:" + i + ":" + data.get(i).getPayload().length + ":" + Packet.MAX_LEN);
+            System.out.println(new String(data.get(i).getPayload()));
+            System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------");
 
             DatagramPacket dp = new DatagramPacket(data.get(i).toBytes(),data.get(i).toBytes().length,InetAddress.getLocalHost(),routerport);
             s.send(dp);

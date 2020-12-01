@@ -332,7 +332,7 @@ public class HttpLib {
 
                 if(!outputdata.containsKey(p.getSequenceNumber())){
 
-                    outputdata.put(p.getSequenceNumber(),new String(p.getPayload()));
+                    outputdata.put(p.getSequenceNumber(),new String(p.getPayload()).trim());
                 }
 
                 long seqrec = p.getSequenceNumber();
@@ -431,14 +431,11 @@ public class HttpLib {
         map.putAll(data);
         for(Map.Entry<Long, String> entry : map.entrySet()){
 
-            System.out.println(entry.getValue());
+            System.out.print(entry.getValue());
 
         }
 
-
     }
-
-
 
 }
 
