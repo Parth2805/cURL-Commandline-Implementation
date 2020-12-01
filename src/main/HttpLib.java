@@ -353,7 +353,7 @@ public class HttpLib {
 
                 }
 
-                System.out.println("For packet:"+ seqrec + "\n"+lastseq + "Packet data:" + new String(p.getPayload()));
+//                System.out.println("For packet:"+ seqrec + "\n"+lastseq + "Packet data:" + new String(p.getPayload()));
 
             }
 
@@ -431,7 +431,12 @@ public class HttpLib {
         map.putAll(data);
         for(Map.Entry<Long, String> entry : map.entrySet()){
 
-            System.out.print(entry.getValue());
+            if(!entry.getValue().equalsIgnoreCase("End")){
+
+                System.out.print(entry.getValue());
+
+            }
+
 
         }
 

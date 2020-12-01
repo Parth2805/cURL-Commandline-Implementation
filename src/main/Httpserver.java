@@ -1,11 +1,9 @@
 import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
+import javafx.concurrent.Task;
 
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 public class Httpserver {
 
@@ -190,9 +188,9 @@ public class Httpserver {
 //        System.out.println();
         for(Long i:data.keySet()){
 
-            System.out.println("Packet:" + i + ":" + data.get(i).getPayload().length + ":" + Packet.MAX_LEN);
-            System.out.println(new String(data.get(i).getPayload()));
-            System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------");
+//            System.out.println("Packet:" + i + ":" + data.get(i).getPayload().length + ":" + Packet.MAX_LEN);
+//            System.out.println(new String(data.get(i).getPayload()));
+//            System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------");
 
             DatagramPacket dp = new DatagramPacket(data.get(i).toBytes(),data.get(i).toBytes().length,InetAddress.getLocalHost(),routerport);
             s.send(dp);
@@ -205,6 +203,33 @@ public class Httpserver {
 
     static void receivepackets(DatagramSocket s,HashMap<Long,Packet> data) throws IOException{
 
+
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+
+                System.out.println("5 seconds has passed :" + data.size());
+                if(data.size()>0){
+
+                    for(Long i:data.keySet()) {
+                        DatagramPacket dp = null;
+                        try {
+                            dp = new DatagramPacket(data.get(i).toBytes(), data.get(i).toBytes().length, InetAddress.getLocalHost(), routerport);
+                        } catch (UnknownHostException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            s.send(dp);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+            }
+        };
+        timer.schedule(task,5000,5000);
 
         while(data.size()!=0){
 
@@ -220,10 +245,10 @@ public class Httpserver {
 //                System.out.println(timepassed);
 //                s.receive(dp);
 //            }
+            final boolean[] flag = {false};
+
 
             s.receive(dp);
-
-
             Packet p = Packet.fromBytes(dp.getData());
             long seqrecv = p.getSequenceNumber();
 
@@ -239,9 +264,10 @@ public class Httpserver {
 
             }
 
-
         }
 
+        task.cancel();
+        timer.cancel();
         System.out.println("All packets ACK'd");
 
     }
