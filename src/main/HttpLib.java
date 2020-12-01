@@ -3,6 +3,9 @@ import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 public class HttpLib {
@@ -19,7 +22,7 @@ public class HttpLib {
     static int clientports = 5000;
     static int sequencenumber = 100;
     int routerport = 3000;
-
+    long serverseq, lastseq, maxseq = -1;
 
     public void get(Boolean verbose,String save_to_file,ArrayList<String> header,String url1) throws IOException {
 
@@ -275,7 +278,7 @@ public class HttpLib {
     public void  localrequest(String method,String url,String data,ArrayList<String> header) throws URISyntaxException, IOException {
 
 
-
+        HashMap<Long, String> outputdata = new HashMap<>();
         String request = "";
         DatagramSocket s = threewayhandshake();
 //        DatagramSocket s = new DatagramSocket(clientports);
@@ -313,14 +316,46 @@ public class HttpLib {
             s.send(request_packet);
             System.out.println("Packet_sent");
 
-            byte[] received = new byte[Packet.MAX_LEN];
-            DatagramPacket response = new DatagramPacket(received,received.length);
 
-            s.receive(response);
 
-            System.out.println("Packet_received");
-            Packet response_packet = Packet.fromBytes(response.getData());
-            System.out.println(new String(response_packet.getPayload()));
+            while(true){
+                byte[] received = new byte[Packet.MAX_LEN];
+                DatagramPacket response = new DatagramPacket(received,received.length);
+                s.receive(response);
+                Packet p = Packet.fromBytes(response.getData());
+
+                Packet p2 = new Packet(Packet.datatype.DATAACK.type,p.getSequenceNumber(),InetAddress.getLocalHost(),p.getPeerPort(),new byte[Packet.MIN_LEN]);
+                DatagramPacket dp2 = new DatagramPacket(p2.toBytes(),p2.toBytes().length,InetAddress.getLocalHost(),routerport);
+
+                s.send(dp2);
+
+
+                if(!outputdata.containsKey(p.getSequenceNumber())){
+
+                    outputdata.put(p.getSequenceNumber(),new String(p.getPayload()));
+                }
+
+                long seqrec = p.getSequenceNumber();
+                if(seqrec>maxseq){
+
+                    maxseq = seqrec;
+                }
+                if(new String(p.getPayload()).trim().equalsIgnoreCase("End")){
+
+                    lastseq = p.getSequenceNumber();
+
+                }
+                if(lastseq-serverseq == outputdata.size()){
+
+                    System.out.println("Packet received all");
+                    printdata(outputdata);
+                    break;
+
+                }
+
+                System.out.println("For packet:"+ seqrec + "\n"+lastseq + "Packet data:" + new String(p.getPayload()));
+
+            }
 
             s.close();
 
@@ -376,6 +411,7 @@ public class HttpLib {
             System.out.println("Connection Successful");
             Packet ack = new Packet(Packet.datatype.ACK.type,sequencenumber,InetAddress.getLocalHost(),two.getPeerPort(),new byte[Packet.MIN_LEN]);
             DatagramPacket ackpkt = new DatagramPacket(ack.toBytes(),ack.toBytes().length,InetAddress.getLocalHost(),routerport);
+            serverseq = two.getSequenceNumber();
             s.send(ackpkt);
             return s;
 
@@ -386,6 +422,19 @@ public class HttpLib {
 
         }
         return s;
+
+    }
+
+    void printdata(HashMap<Long,String> data){
+
+        TreeMap<Long, String> map = new TreeMap<>();
+        map.putAll(data);
+        for(Map.Entry<Long, String> entry : map.entrySet()){
+
+            System.out.println(entry.getValue());
+
+        }
+
 
     }
 

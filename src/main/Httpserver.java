@@ -3,6 +3,8 @@ import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Httpserver {
@@ -12,7 +14,9 @@ public class Httpserver {
     static int clientnumber = 0;
     static boolean verbose = false;
     static int routerport = 3000;
-    static int sequencenumber = 100;
+    static long sequencenumber = 0;
+    int window = 4;
+    static int nop = -1;
 
     public static void main(String args[]) throws IOException {
 
@@ -60,6 +64,8 @@ public class Httpserver {
         DatagramSocket ss = new DatagramSocket(port);
         boolean part1 = false;
         boolean part2 = false;
+        HashMap<Long,Packet> data =  new HashMap<>();
+
 
         while (true) {
 
@@ -96,7 +102,7 @@ public class Httpserver {
 
 
                 Httpserverlib request = new Httpserverlib();
-                String output = new String(request_packet.getPayload());
+                String output = new String(request_packet.getPayload()).trim();
 
 
                 if(verbose){
@@ -113,26 +119,63 @@ public class Httpserver {
                 }
 //            message+="\r\n";
 
-                Packet response =  new Packet(Packet.datatype.DATA.type,sequencenumber,InetAddress.getLocalHost(),request_packet.getPeerPort(),message.trim().getBytes());
-                DatagramPacket response_packet = new DatagramPacket(response.toBytes(),response.toBytes().length,InetAddress.getLocalHost(),routerport);
+//                Packet response =  new Packet(Packet.datatype.DATA.type,sequencenumber,InetAddress.getLocalHost(),request_packet.getPeerPort(),message.trim().getBytes());
+//                DatagramPacket response_packet = new DatagramPacket(response.toBytes(),response.toBytes().length,InetAddress.getLocalHost(),routerport);
 
-                DatagramSocket s = new DatagramSocket();
-                s.send(response_packet);
+                //Make packets to send
+                byte responsebytes[] = message.getBytes();
+                if(message.length()>Packet.MAX_LEN){
 
-                s.close();
+                    byte temp[] = new byte[Packet.MAX_LEN];
+                    int j=0;
+                    for(int i=0;i<responsebytes.length;i++){
+
+                        temp[j] = responsebytes[i];
+                        j++;
+                        if(j==Packet.MAX_LEN-1){
+
+                            Packet p =  new Packet(Packet.datatype.DATA.type,sequencenumber,InetAddress.getLocalHost(),request_packet.getPeerPort(),temp);
+                            data.put(sequencenumber,p);
+                            sequencenumber++;
+                            temp = new byte[Packet.MAX_LEN];
+                            j=0;
+
+                        }
+
+                    }
+
+
+                }else{
+                    Packet p =  new Packet(Packet.datatype.DATA.type,sequencenumber,InetAddress.getLocalHost(),request_packet.getPeerPort(),responsebytes);
+                    data.put(sequencenumber,p);
+                    sequencenumber++;
+
+                }
+                String msg = "End";
+                byte temp[] =  msg.getBytes();
+                Packet p =  new Packet(Packet.datatype.DATA.type,sequencenumber,InetAddress.getLocalHost(),request_packet.getPeerPort(),temp);
+                data.put(sequencenumber,p);
+                sequencenumber++;
+
+                nop = data.size();
+
+                System.out.println("Printing ds:");
+                for(long i : data.keySet()){
+
+                    System.out.println(new String(data.get(i).getPayload()));
+                }
+
+                sendpackets(data);
+
+
+
 
                 if(verbose){
 
                     System.out.println("Client:" + clientnumber +" disconnected");
 
                 }
-
-
-
             }
-
-
-
 
         }
 
@@ -140,4 +183,64 @@ public class Httpserver {
 
 
     }
+
+    static void sendpackets(HashMap<Long,Packet> data) throws IOException {
+
+        DatagramSocket s = new DatagramSocket();
+//        System.out.println();
+        for(Long i:data.keySet()){
+
+            DatagramPacket dp = new DatagramPacket(data.get(i).toBytes(),data.get(i).toBytes().length,InetAddress.getLocalHost(),routerport);
+            s.send(dp);
+
+
+        }
+
+        receivepackets(s,data);
+    }
+
+    static void receivepackets(DatagramSocket s,HashMap<Long,Packet> data) throws IOException{
+
+
+        while(data.size()!=0){
+
+            byte temp[] = new byte[Packet.MAX_LEN];
+            DatagramPacket dp =new DatagramPacket(temp,temp.length);
+
+//            long timer = System.currentTimeMillis();
+//            long timepassed = 0L;
+
+//            while(timepassed<3*1000){
+//
+//                timepassed = (new Date()).getTime() - timer;
+//                System.out.println(timepassed);
+//                s.receive(dp);
+//            }
+
+            s.receive(dp);
+
+
+            Packet p = Packet.fromBytes(dp.getData());
+            long seqrecv = p.getSequenceNumber();
+
+            if(p.getType()==Packet.datatype.DATAACK.type){
+                System.out.println("Received ACK:" + seqrecv);
+                System.out.println("Packets in data:" + data.keySet());
+                if(data.keySet().contains(seqrecv)){
+                    System.out.println("Removing ack");
+                    data.remove(seqrecv);
+//                    System.out.println(seqrecv);
+
+                }
+
+            }
+
+
+        }
+
+        System.out.println("All packets ACK'd");
+
+    }
+
+
 }
